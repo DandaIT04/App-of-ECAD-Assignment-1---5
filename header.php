@@ -12,6 +12,12 @@
     <script src="js/bootstrap.min.js"></script>
     <!-- Site specific Cascading Stylesheet-->
     <link rel="stylesheet" href="css/site.css">
+    <!-- Extra Bootstrap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 </head>
 <body>
     <div class="container">
@@ -19,7 +25,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <a href="index.php">
-                    <img src="Images/header_coco.png" alt="Logo"
+                    <img src="Images/Team.png" alt="Logo"
                     class="img-fluid" style="width: 100%"/></a>
             </div>
         </div>

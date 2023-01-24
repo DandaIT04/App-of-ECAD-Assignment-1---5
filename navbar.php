@@ -37,10 +37,8 @@ if(isset($_SESSION["ShopperName"])) {
             <span class="navbar-toggler-icon"></span>
         </button> 
     </nav>
-    <!-- <hr style="color: #000"> -->
-<!-- To Do 4 (Practical 1) - 
-     Define a collapsible navbar -->
-    <nav class="navbar navbar-expand-md navbar-light font-weight-bold" style="background-color: #FAEFD6;"> 
+<!-- To Do 4 (Practical 1) - Define a collapsible navbar -->
+    <nav class="navbar navbar-expand-md navbar-light font-weight-bold" style="background-color: #FAEFD6; top: -35px;"> 
         <!-- Collapsible part of navbar -->
         <div class="collapse navbar-collapse" id="collapsibleNavbar"> 
             <!-- Left-justified menu items -->
@@ -56,7 +54,7 @@ if(isset($_SESSION["ShopperName"])) {
                 </li>
             </ul>
             <!-- Right-justified menu items -->
-            <ul class="navbar-nav ml-auto"> 
+            <ul class="navbar-nav ml-auto float-right"> 
                 <?php echo $content2; ?>
             </ul>
         </div>
