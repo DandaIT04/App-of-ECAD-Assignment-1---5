@@ -70,13 +70,17 @@ a {
     <label for="psw"><b>Password</b></label>
     <input class="form-control" type="password" placeholder="Enter Password" name="psw" id="psw" required>  
 
-    <hr>
+    <br>
 
     <button type="submit" class="registerbtn">Login</button>
   </div>
   
+  <hr>
   <div class="container signin">
+    <br>
     <p>No account? <a href="register.php">Create Account</a>.</p>
+
+    <p>Forgot Password? <a href="forgotPassword.php">Recover Password</a>.</p>
   </div>
 </form>
 

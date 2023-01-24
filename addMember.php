@@ -13,11 +13,13 @@ $birthdate = $_POST["personBirth"];
 $phone = $_POST["personPhone"];
 $email = $_POST["email"];
 $pwdquestion = $_POST["pq"];
+$password = $_POST["psw"];
+$pwdanswer = $_POST["pa"];
 
 //$password = $_POST["password"];
 
-$password = password_hash($_POST["psw"], PASSWORD_DEFAULT);
-$pwdanswer = password_hash($_POST["pa"], PASSWORD_DEFAULT);
+#$password = password_hash($_POST["psw"], PASSWORD_DEFAULT);
+#$pwdanswer = password_hash($_POST["pa"], PASSWORD_DEFAULT);
 
 include_once("mysql_conn.php");
 
@@ -57,7 +59,7 @@ else{
         $_SESSION["ShopperName"] = $name;      
     
         $Message = "<h3>Registration <u>successful!</u><br /><br /> 
-        Logging in as $_SESSION[ShopperName]....<br /><br />
+        Logging in as $_SESSION[ShopperName] with Shopper ID of $_SESSION[ShopperID]....<br /><br />
         Redirecting in 5 seconds....</h3><br />";
                
     }

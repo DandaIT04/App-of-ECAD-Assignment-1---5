@@ -203,12 +203,14 @@ function validateForm()
     <input class="form-control" type="text" placeholder="Enter Phone" name="personPhone" id="personPhone" value = "99999999" required>
     -->
     <hr>
-    <button type="submit" value="submit">Register</button>
+    <button type="submit" value="submit" class="registerbtn">Register</button>
     <br>
   </div>
   <br>
   <div class="container signin">
+    <br>
     <p>Already have an account? <a href="login.php">Sign in</a>.</p>
+    <br>
   </div>
 </form>
 

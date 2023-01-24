@@ -25,31 +25,32 @@ if ($result->num_rows > 0) {
 
 	$row1 = $result->fetch_array();
 
-	if (password_verify($pwd,$row1["Password"]) == true){
+	#if (password_verify($pwd,$row1["Password"]) == true){
+    if ($pwd == $row1["Password"]){
+        $checkLogin = true;
 
-			$checkLogin = true;
-	
-			$_SESSION["ShopperID"] = $row1["ShopperID"];
-			$_SESSION["ShopperName"] = $row1["Name"];
+        $_SESSION["ShopperID"] = $row1["ShopperID"];
+        $_SESSION["ShopperName"] = $row1["Name"];
 
-			$qry = "SELECT sc.ShopCartID, COUNT(sci.ProductID) AS NumItems
-					FROM shopcart sc LEFT JOIN shopcartitem sci
-					ON sc.ShopCartID=sci.ShopCartID
-					WHERE sc.OrderPlaced=0 AND sc.ShopperID=?";
+        $qry = "SELECT sc.ShopCartID, COUNT(sci.ProductID) AS NumItems
+                FROM shopcart sc LEFT JOIN shopcartitem sci
+                ON sc.ShopCartID=sci.ShopCartID
+                WHERE sc.OrderPlaced=0 AND sc.ShopperID=?";
 
-			$stmt = $conn->prepare($qry);
-			$stmt->bind_param("i", $_SESSION["ShopperID"]);
-			$stmt->execute();
-			$result2 = $stmt->get_result();
-			$stmt->close();
-			if ($result2->num_rows > 0) {
-				$row2 = $result2->fetch_array();
-				$_SESSION["Cart"] = $row2["ShopCartID"];
-				$_SESSION["NumCartItem"] = $row2["NumItems"];
-			}
+        $stmt = $conn->prepare($qry);
+        $stmt->bind_param("i", $_SESSION["ShopperID"]);
+        $stmt->execute();
+        $result2 = $stmt->get_result();
+        $stmt->close();
+
+        if ($result2->num_rows > 0) {
+            $row2 = $result2->fetch_array();
+            $_SESSION["Cart"] = $row2["ShopCartID"];
+            $_SESSION["NumCartItem"] = $row2["NumItems"];
+        }
             
         $theRedirect = "index";
-        $Message = "<h3>Logging in as <u>$_SESSION[ShopperName]</u></h3><br>
+        $Message = "<h3>Logging in as <u>$_SESSION[ShopperName] with Shopper ID of $_SESSION[ShopperID]</u></h3><br>
         <h3>Redirecting to index page in 5 seconds.....</h3>";    
 		
     }
@@ -61,6 +62,7 @@ if ($result->num_rows > 0) {
     }
 
 }
+
 else {
     $theRedirect = "login";
     $Message = "<h3 style='color:red'><u>Invalid</u> Login Credentials</h3><br>
