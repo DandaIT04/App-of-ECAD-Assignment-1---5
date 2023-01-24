@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+include("header.php");
+?>
+
+<?php
+
 $name = $_POST["personName"];
 $address = $_POST["personAddress"];
 $country = $_POST["personCountry"];
@@ -16,47 +21,95 @@ $pwdanswer = password_hash($_POST["pa"], PASSWORD_DEFAULT);
 
 include_once("mysql_conn.php");
 
-$tempQryCheck = "SELECT * FROM Shopper WHERE Email = ? 
-VALUES (?)";
+$tempQryCheck = "SELECT Email FROM Shopper WHERE Email = ?";
 
 $tempCheck = $conn->prepare($tempQryCheck);
-$tempCheck->bind_param("ssssss",$email);
+$tempCheck->bind_param("s",$email);
 
-if ($tempCheck -> execute()){
-    if ($tempCheck -> num_rows == 1){
-        $Message = "<h3 style='color:red'>Email already exists!</h3>";
-    }
-    else{
-        $qry = "INSERT INTO Shopper (Name,BirthDate,Address, 
-        Country,Phone,Email,Password,PwdQuestion,PwdAnswer)
-         VALUES (?,?,?,?,?,?,?,?,?)";
-        
-        $stmt = $conn->prepare($qry);
-        $stmt->bind_param("ssssss",$name,$birthdate,$address,$country,$phone,$email,$password,$pwdquestion,$pwdanswer);
-        
-        if ($stmt->execute()) {
-        
-            $qry = "SELECT LAST_INSERT_ID() AS ShopperID";
-            $result = $conn->query($qry);
-            while ($row = $result->fetch_array()) {
-                $_SESSION["ShopperID"] = $row["ShopperID"];
-            }
-        
-            $Message = "Registration successful!<br />
-                        Your ShopperID is $_SESSION[ShopperID]<br />";
-        
-            $_SESSION["ShopperName"] = $name;            
-        }
-    }
+$tempCheck -> execute();
+
+$tempResult = $tempCheck->get_result();
+$tempCheck-> close();
+
+if ($tempResult -> num_rows == 1){
+    $Message = "<h3 style='color:red'>Email already <u>exists!</u><br><br>Redirecting in 5 seconds....</h3><br>";
+
+    $theRedirect = "register";
+    
 }
 
-$stmt->close();
+else{
+    $qry = "INSERT INTO Shopper (Name,BirthDate,Address, 
+    Country,Phone,Email,Password,PwdQuestion,PwdAnswer)
+     VALUES (?,?,?,?,?,?,?,?,?)";
+    
+    $stmt = $conn->prepare($qry);
+    $stmt->bind_param("sssssssss",$name,$birthdate,$address,$country,$phone,$email,$password,$pwdquestion,$pwdanswer);
+    
+    if ($stmt->execute()) {
+    
+        $qry = "SELECT LAST_INSERT_ID() AS ShopperID";
+        $result = $conn->query($qry);
+        while ($row = $result->fetch_array()) {
+            $_SESSION["ShopperID"] = $row["ShopperID"];
+        }
+
+        $_SESSION["ShopperName"] = $name;      
+    
+        $Message = "<h3>Registration <u>successful!</u><br /><br /> 
+        Logging in as $_SESSION[ShopperName]....<br /><br />
+        Redirecting in 5 seconds....</h3><br />";
+               
+    }
+    $stmt->close();
+   
+    $theRedirect = "index";
+       
+}
+
 $conn->close();
+?>
 
-include("header.php");
-
+<?php
 echo $Message;
+?>
 
+<script type="text/javascript">
+
+var js_variable  = '<?php echo $theRedirect;?>';
+
+if (js_variable === "register"){
+    setTimeout(function () {
+        window.location.href= 'register.php'; // the redirect goes here
+    },5000);
+}
+
+else{
+    setTimeout(function () {
+        window.location.href= 'index.php'; // the redirect goes here
+    },5000);        
+}
+
+
+</script>
+
+<div class="product-slider">
+  <div id="carousel" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+      <div class="item active"> <img src="Images/Slider_Index/1.png"> </div>
+      <div class="item"> <img src="Images/Slider_Index/2.png"> </div>
+      <div class="item"> <img src="Images/Slider_Index/3.png"> </div>
+      <div class="item"> <img src="Images/Slider_Index/4.png"> </div>
+      <div class="item"> <img src="Images/Slider_Index/5.png"> </div>
+      <!-- <div class="item"> <img src="http://placehold.it/1600x700?text=Product+06"> </div>
+      <div class="item"> <img src="http://placehold.it/1600x700?text=Product+07"> </div>
+      <div class="item"> <img src="http://placehold.it/1600x700?text=Product+08"> </div>
+      <div class="item"> <img src="http://placehold.it/1600x700?text=Product+09"> </div>
+      <div class="item"> <img src="http://placehold.it/1600x700?text=Product+10"> </div> -->
+    </div>
+  </div>
+</div>
+
+<?php
 include("footer.php");
-
 ?>

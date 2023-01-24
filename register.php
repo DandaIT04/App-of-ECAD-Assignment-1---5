@@ -62,11 +62,26 @@ a {
 <script type="text/javascript">
 function validateForm()
 {
+  if (document.register.psw.value.length < 8) {
+    alert("password must be at least 8 characters!");
+    return false;              // cancel submission    
+  }
     // To Do 1 - Check if password matched
 	if (document.register.psw.value != document.register.psw2.value) {
     alert("passwords not matched!");
     return false;              // cancel submission
   }
+
+  if (document.register.personAddress.value.length < 8) {
+    alert("address must be at least 8 characters!");
+    return false;              // cancel submission      
+  }
+
+  if (document.register.personCountry.value.length < 4) {
+    alert("country must be at least 4 characters!");
+    return false;              // cancel submission      
+  }  
+
 	// To Do 2 - Check if telephone number entered correctly
 	//           Singapore telephone number consists of 8 digits,
 	//           start with 6, 8 or 9
@@ -123,6 +138,7 @@ function validateForm()
     <p>Please fill in this form to create an account.</p>
     <hr>
 
+    
     <label for="email"><b>Email</b></label>
     <input class="form-control" type="email" placeholder="Enter Email" name="email" id="email" required>
     <br>
@@ -152,7 +168,40 @@ function validateForm()
     
     <label for="personPhone"><b>Phone</b></label>
     <input class="form-control" type="text" placeholder="Enter Phone" name="personPhone" id="personPhone" required>    
+    
 
+    <!-- testing purposes DELETE FROM Shopper WHERE Name='aaa'; -->
+    <!--
+    <label for="email"><b>Email</b></label>
+    <input class="form-control" type="email" placeholder="Enter Email" name="email" id="email" value="fakemail@fakemail.com" required>
+    <br>
+    <label for="psw"><b>Password</b></label>
+    <input class="form-control" type="password" placeholder="Enter Password" name="psw" id="psw" value = "aaaaaaaa" required>    
+
+    <label for="psw2"><b>Repeat Password</b></label>
+    <input class="form-control" type="password" placeholder="Repeat Password" name="psw2" id="psw2" value = "aaaaaaaa" required>
+
+    <label for="pq"><b>Password Question</b></label>
+    <input class="form-control" type="text" placeholder="Enter password question" name="pq" id="pq" value = "aaa" required>    
+
+    <label for="pa"><b>Password Answer</b></label>
+    <input class="form-control" type="password" placeholder="Enter password answer" name="pa" id="pa" value = "aaa" required>   
+
+    <label for="personName"><b>Name</b></label>
+    <input class="form-control" type="text" placeholder="Enter Name" name="personName" id="personName" value = "aaa" required>
+
+    <label for="personBirth"><b>Birthdate</b></label>
+    <input class="form-control" type="date" placeholder="Enter Birthdate" name="personBirth" id="personBirth" value = "1998-06-01" required>
+    <br>
+    <label for="personAddress"><b>Address</b></label>
+    <input class="form-control" type="text" placeholder="Enter Address" name="personAddress" id="personAddress" value = "aaaaaaaa" required>
+    
+    <label for="personCountry"><b>Country</b></label>
+    <input class="form-control" type="text" placeholder="Enter Country" name="personCountry" id="personCountry" value = "aaaa" required>
+    
+    <label for="personPhone"><b>Phone</b></label>
+    <input class="form-control" type="text" placeholder="Enter Phone" name="personPhone" id="personPhone" value = "99999999" required>
+    -->
     <hr>
     <button type="submit" value="submit">Register</button>
     <br>
