@@ -65,10 +65,10 @@ a {
     <hr>
 
     <label for="email"><b>Email</b></label>
-    <input type="text" placeholder="Enter Email" name="email" id="email" required>
+    <input class="form-control" type="text" placeholder="Enter Email" name="email" id="email" required>
 
     <label for="psw"><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="psw" id="psw" required>  
+    <input class="form-control" type="password" placeholder="Enter Password" name="psw" id="psw" required>  
 
     <hr>
 

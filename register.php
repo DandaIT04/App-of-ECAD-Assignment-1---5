@@ -59,38 +59,105 @@ a {
 }
 </style>
 
-<form name="register" action="addMember.php" method="post">
+<script type="text/javascript">
+function validateForm()
+{
+    // To Do 1 - Check if password matched
+	if (document.register.psw.value != document.register.psw2.value) {
+    alert("passwords not matched!");
+    return false;              // cancel submission
+  }
+	// To Do 2 - Check if telephone number entered correctly
+	//           Singapore telephone number consists of 8 digits,
+	//           start with 6, 8 or 9
+  if (document.register.personPhone.value != ""){
+    var str = document.register.personPhone.value;
+    if (str.length != 8) {
+      alert("Please enter a 8-digit phone number.");
+      return false;
+    }
+                      // cancel submission
+    else if (str.substr(0,1) != "6" &&
+    str.substr(0,1) != "8" &&
+    str.substr(0,1) != "9" ) {
+      alert("phone number in Singapore should start with 6, 8 or 9.");
+      return false; // cancel submission
+    }
+  }
+
+  if (document.register.personBirth.value != ""){
+    
+    var d1 = new Date();
+    var d2 = new Date(document.register.personBirth.value);
+
+    var same = d1.getTime() === d2.getTime();
+
+    if (same === true){
+      alert("Invalid date!"); 
+      return false;      
+    }
+
+    else if(same === false){
+      var age = d1.getFullYear() - d2.getFullYear();
+
+      if (age >= 16){
+        return true;
+      }
+
+      else{
+        alert("You must be above 16 to register!"); 
+        return false;  
+      }
+
+    }   
+  }
+
+  return true;  // No error found
+}
+
+</script>
+
+<form name="register" action="addMember.php" method="post" onsubmit="return validateForm(this)">
   <div class="container">
     <h1>Register</h1>
     <p>Please fill in this form to create an account.</p>
     <hr>
 
     <label for="email"><b>Email</b></label>
-    <input type="text" placeholder="Enter Email" name="email" id="email" required>
-
+    <input class="form-control" type="email" placeholder="Enter Email" name="email" id="email" required>
+    <br>
     <label for="psw"><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+    <input class="form-control" type="password" placeholder="Enter Password" name="psw" id="psw" required>    
 
-    <label for="psw-repeat"><b>Repeat Password</b></label>
-    <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat" required>
-    
+    <label for="psw2"><b>Repeat Password</b></label>
+    <input class="form-control" type="password" placeholder="Repeat Password" name="psw2" id="psw2" required>
+
+    <label for="pq"><b>Password Question</b></label>
+    <input class="form-control" type="text" placeholder="Enter password question" name="pq" id="pq" required>    
+
+    <label for="pa"><b>Password Answer</b></label>
+    <input class="form-control" type="password" placeholder="Enter password answer" name="pa" id="pa" required>   
+
     <label for="personName"><b>Name</b></label>
-    <input type="text" placeholder="Enter Name" name="personName" id="personName" required>
+    <input class="form-control" type="text" placeholder="Enter Name" name="personName" id="personName" required>
 
+    <label for="personBirth"><b>Birthdate</b></label>
+    <input class="form-control" type="date" placeholder="Enter Birthdate" name="personBirth" id="personBirth" required>
+    <br>
     <label for="personAddress"><b>Address</b></label>
-    <input type="text" placeholder="Enter Address" name="personAddress" id="personAddress" required>
+    <input class="form-control" type="text" placeholder="Enter Address" name="personAddress" id="personAddress" required>
     
     <label for="personCountry"><b>Country</b></label>
-    <input type="text" placeholder="Enter Country" name="personCountry" id="personCountry" required>
+    <input class="form-control" type="text" placeholder="Enter Country" name="personCountry" id="personCountry" required>
     
     <label for="personPhone"><b>Phone</b></label>
-    <input type="text" placeholder="Enter Phone" name="personPhone" id="personPhone" required>    
+    <input class="form-control" type="text" placeholder="Enter Phone" name="personPhone" id="personPhone" required>    
 
     <hr>
-
-    <button type="submit" class="registerbtn">Register</button>
+    <button type="submit" value="submit">Register</button>
+    <br>
   </div>
-  
+  <br>
   <div class="container signin">
     <p>Already have an account? <a href="login.php">Sign in</a>.</p>
   </div>
