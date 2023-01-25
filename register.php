@@ -77,6 +77,11 @@ function validateForm()
     return false;              // cancel submission      
   }
 
+  if (document.register.personName.value.length < 2) {
+    alert("address must be at least 2 characters!");
+    return false;              // cancel submission      
+  }  
+
   if (document.register.personCountry.value.length < 4) {
     alert("country must be at least 4 characters!");
     return false;              // cancel submission      
