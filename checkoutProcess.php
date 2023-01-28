@@ -6,10 +6,16 @@ include_once("mysql_conn.php");
 
 if($_POST) //Post Data received from Shopping cart page.
 {
-	// To Do 6 (DIY): Check to ensure each product item saved in the associative
-	//                array is not out of stock
-	
-	// End of To Do 6
+	// Check to ensure each product item saved in the associative
+	// array is not out of stock
+	foreach ($_SESSION['Items'] as $key => $item) {
+		$qry = "SELECT Quantity FROM product WHERE ProductID=$item[productId]";
+		$result = $conn->query($qry);
+
+		if ($result->num_rows > 0) {
+            echo ($result);
+		}
+	}
 	
 	$paypal_data = '';
 	// Get all items from the shopping cart, concatenate to the variable $paypal_data
@@ -25,7 +31,6 @@ if($_POST) //Post Data received from Shopping cart page.
     $_SESSION["Tax"] = round($_SESSION["SubTotal"]*0.08, 2);
 	
 	// Compute Shipping charge
-
     $_SESSION["ShipCharge"] = 5.00;	
 	
 	//Data to be sent to PayPal
@@ -112,12 +117,18 @@ if(isset($_GET["token"]) && isset($_GET["PayerID"]))
 	if("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || 
 	   "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) 
 	{
-		// To Do 5 (DIY): Update stock inventory in product table 
-		//                after successful checkout
-		
-		// End of To Do 5
+		// Update stock inventory in product table 
+		// after successful checkout
+		$qry = "SELECT * from shopcartitem WHERE ShopCartID=$_SESSION[Cart]";
+		$result = $conn->query($qry);
+		if ($conn->num_rows($result) > 0) {
+			while ($row = $conn->fetch_array($result)) {
+				$qry = "UPDATE product SET Quantity = Quantity-$row[Quantity] WHERE ProductID=$row[ProductID]";
+				$conn->query($qry);
+			}
+		}
 	
-		// To Do 2: Update shopcart table, close the shopping cart (OrderPlaced=1)
+		//Update shopcart table, close the shopping cart (OrderPlaced=1)
         $total = $_SESSION["SubTotal"] + $_SESSION["Tax"] + $_SESSION["ShipCharge"];
         $qry = "UPDATE shopcart SET OrderPlaced=1, Quantity=?,
                 SubTotal=?, ShipCharge=?, Tax=?, Total=?
