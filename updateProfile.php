@@ -316,21 +316,42 @@ if (!empty($_POST))
                 }
 
                 elseif ($x == 5){
+
+                  $tempQryCheck1 = "SELECT * FROM Shopper";
+
+                  $tempCheck1 = $conn->prepare($tempQryCheck1);
+                  
+                  $tempCheck1 -> execute();
+                  
+                  $tempResult1 = $tempCheck1->get_result();
+                  $tempCheck1-> close();
+
+
                     if ($email == $_SESSION['tempUpdateEmail']){
                         echo "<h3 style='color:red'>Same Email detected!</h3><br>";
                     }
+
+                    if ($tempResult1 -> num_rows > 0){
+                      foreach ($tempResult1 as $theRow1){
+                        if ($theRow1['Email'] == $email){
+                          echo "<h3 style='color:red'>Same Email detected!</h3><br>";
+                        }
+                      }
+                    }
+
                     else{
-                        $theRedirect = "goredirect";
 
-                        $stmt = $conn->prepare($qry);
-                        $stmt->bind_param("ss",$my_array[$x],$_SESSION["ShopperID"]);
-                        $stmt->execute();
-                        $stmt->close();
+                      $theRedirect = "goredirect";
 
-                        echo "<h3>Email changed!</h3><br>";
+                      $stmt = $conn->prepare($qry);
+                      $stmt->bind_param("ss",$my_array[$x],$_SESSION["ShopperID"]);
+                      $stmt->execute();
+                      $stmt->close();
 
-                        $URL="updateProfile.php";
-                        echo "<script type='text/javascript'>document.location.href='{$URL}';</script>";
+                      echo "<h3>Email changed!</h3><br>";
+
+                      $URL="updateProfile.php";
+                      echo "<script type='text/javascript'>document.location.href='{$URL}';</script>";
                     }    
                 }
                 elseif ($x == 7){
