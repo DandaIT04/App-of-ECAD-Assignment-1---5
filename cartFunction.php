@@ -118,7 +118,7 @@ function removeItem() {
 	$cartid = $_SESSION["Cart"];
 	$pid = $_POST["product_id"];
 	include_once("mysql_conn.php"); //Establish database connection handle: $conn
-	$qry = "DELETE FROM ShopCartItem WHERE ProductID=? AND ShopeCartID=?";
+	$qry = "DELETE FROM ShopCartItem WHERE ProductID=? AND ShopCartID=?";
 	$stmt = $conn->prepare($qry);
 	$stmt->bind_param("ii", $pid, $cartid); // "ii" - 2 integers
 	$stmt->execute();
