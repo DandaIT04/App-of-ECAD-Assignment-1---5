@@ -105,12 +105,18 @@ if (isset($_SESSION["Cart"])) {
 			echo "<br />";
 		}
 		echo "</p>";
-		// To Do 7 (Practical 5):
+		
 		// Add PayPal Checkout button on the shopping cart page
-		echo "<form method='post' action='checkoutProcess.php'>";
-		echo "<input type='image' style='float:right;'
-						src='https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif'>";
-		echo "</form></p>";
+		// echo "<form method='post' action='checkoutProcess.php'>";
+		// echo "<input type='image' style='float:right;'
+		// 				src='https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif'>";
+		// echo "</form></p>";
+
+		echo "<form method='post' action='checkoutConfirmation.php'>
+				<input type='submit' class='checkout'
+				name='checkout-btn' id='checkout-btn'
+				value='Checkout'/>
+	  			</form>";
 	}
 	else {
 		echo "<h3 style='text-align:center; color:red;'>Empty shopping cart!</h3>";
