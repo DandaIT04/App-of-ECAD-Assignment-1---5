@@ -1,6 +1,6 @@
 <?php
 $PayPalMode 		= 'sandbox';//sandbox or live
-$PayPalApiUsername 	= 'sb-hh2gh24002586@business.example.com'; 		//PayPal API Username
+$PayPalApiUsername 	= 'sb-hh2gh24002586_api1.business.example.com'; 		//PayPal API Username
 $PayPalApiPassword 	= 'NNWM5VCVJKYFS9FT'; 		//Paypal API password
 $PayPalApiSignature = 'Al7-cyn3DWLzIfTKM400VVMAJrnaAGxrxyoQEHxURWK5PENoEXquPZij'; 		//Paypal API Signature
 $PayPalCurrencyCode = 'SGD'; 	//Paypal Currency Code
