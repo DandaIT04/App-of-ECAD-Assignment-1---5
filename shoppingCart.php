@@ -36,14 +36,16 @@ if (isset($_SESSION["Cart"])) {
 		echo "<th width='60px'>Quantity</th>";
 		echo "<th width='120px'>Total (S$)</th>";
 		echo "<th>&nbsp;</th>";
+		echo "<th width='200px'>Update</th>";
 		echo "</tr>"; //End of header row
 		echo "</thead>"; //End of table's header section
-		// To Do 5 (Practical 5):
+
 		// Declare an array to store the shopping cart items in session variable 
 		$_SESSION["Items"]=array();
-		// To Do 3 (Practical 4): 
+
 		// Display the shopping cart content
 		$subTotal = 0; // Declare a variable to compute subtotal before tax
+		$subTotalQuantity = 0;
 		echo "<tbody>"; // Start of table's body section
 		while ($row = $result->fetch_array()) {
 			echo "<tr>";
@@ -51,24 +53,11 @@ if (isset($_SESSION["Cart"])) {
 			echo "Product ID: $row[ProductID]</td>";
 			$formattedPrice = number_format($row["Price"], 2);
 			echo "<td>$formattedPrice</td>";
-			echo "<td>";//Column for update quantity of purchase
-			echo "<form action='cartFunction.php' method='post'>";
-			echo "<select name='quantity' onChange='this.form.submit()'>";
-			for ($i = 1; $i <= 10; $i++) {// To populate drop-down list from 1 to 10
-				if($i == $row["Quantity"])
-				// Select drop-down ist item with value same as the quantity of purchase
-				$selected = "selected";
-				else
-					$selected = ""; //No specific item is selected
-				echo "<option value='$i' $selected>$i</option>";
-			}
-			echo "</select>";
-			echo "<input type='hidden' name='action' value='update' />";
-			echo "<input type='hidden' name='product_if' value='$row[ProductID]' />";
-			echo "</form>";
-			echo "</td>";
+			echo "<td>$row[Quantity]</td>";
+
 			$formattedTotal = number_format($row["Total"], 2);
 			echo "<td>$formattedTotal</td>";
+
 			echo "<td>"; // Column for remove item from shopping cart
 			echo "<form action='cartFunction.php' method='post'>";
 			echo "<input type='hidden' name='action' value='remove' />";
@@ -76,8 +65,19 @@ if (isset($_SESSION["Cart"])) {
 			echo "<input type='image' src='images/trash-can.png' title='Remove Item'/>";
 			echo "</form>";
 			echo "</td>";
+
+			echo "<td>"; //Column for update quantity of purchase
+			echo "<form action='cartFunction.php' method='post'>";
+			echo "<input type='hidden' name='action' value='update' />";
+			echo "<input type='hidden' name='product_id' value='$row[ProductID]' />";
+			echo "Quantity: <input type='number' name='quantity' value='1'
+								min='1' max='10' style='width:40px' required />";
+			echo "&nbsp;";
+			echo "<button type='submit'> Update </button>";
+			echo "</form>";
+			echo "</td>";
 			echo "</tr>";
-			// To Do 6 (Practical 5):
+
 		    // Store the shopping cart items in session variable as an associate array
 			$_SESSION["Items"][] = array("productId"=>$row["ProductID"],
 									"name"=>$row["Name"],
@@ -85,26 +85,77 @@ if (isset($_SESSION["Cart"])) {
 									"quantity"=>$row["Quantity"]);
 			// Accumulate the running sub-total
 			$subTotal += $row["Total"];
+
+			// Accumulate the running sub-total
+			$formattedQuantity = number_format($row["Quantity"], 2);
+			$subTotalQuantity += $row["Quantity"];
 		}
 		echo "</tbody>"; // End of table's body section
 		echo "</table>"; // End of table
 		echo "</div>"; // End of Bootstrap responsive table
-				
-		// To Do 4 (Practical 4): 
-		// Display the subtotal at the end of the shopping cart
-		echo "<p style='text-align:right; font-size:20px'>
-			  Subtotal = S$". number_format($subTotal, 2);
 		$_SESSION["SubTotal"] = round($subTotal, 2);
-
-		echo "<p>Content in items session variable:<br />";
-		Foreach($_SESSION['Items'] as $key1=>$item){
-			echo "items[". $key1 . "] : ";
-			foreach($item as $key2=>$value2){
-				echo $key2 . "=> " . $value2 . ", ";
-			}
-			echo "<br />";
+		// Additional Requirment 2
+		// Total Quantity in Cart
+		echo "<p style='text-align:right; font-size:15px'>
+			  Total Quantity is ". number_format($subTotalQuantity);
+		$_SESSION["SubTotalQ"] = round($subTotalQuantity);	
+		echo "<br>";
+		echo "<br>";
+		// Additional Requirment
+		// Delivery Chargings
+		if ($_SESSION["SubTotal"] > 200) {
+			echo "<br>";
+			echo "<p style='text-align:right; font-size:15px; color:red;' > Delivery Charges are waived for orders above $200";
 		}
-		echo "</p>";
+		else {
+			echo "<p style='text-align:right; font-size:15px'> Please Select Delivery Mode";
+			echo "<br>";
+			echo "<form style='text-align:right;' action='' method='post'>";
+			echo "<label>";
+			echo "<input method='post' type='radio' name='deliverType' value='standard'> Standard Delivery (S$5.00)";
+			echo "</label>";
+			echo "<br>";
+			echo "<label>";
+			echo "<input type='radio' name='deliverType' value='express'> Express Delivery (S$10.00)";
+			echo "</label>";
+			echo "<br>";
+			echo "<input type='submit' value='Update Delivery Type'>";
+			echo "</form>";
+			if (isset($_POST["deliverType"])) {
+				$delivery = $_POST["deliverType"];  
+				if ($delivery == "standard") {
+					echo "<p style='text-align:right; font-size:20px'>
+							Subtotal = S$". number_format(($_SESSION["SubTotal"] + 5), 2);
+				}
+				else if ($delivery == "express"){
+					echo "<p style='text-align:right; font-size:20px'>
+							Subtotal = S$". number_format(($_SESSION["SubTotal"] + 10), 2);
+				}
+			}
+			// Basic Requirment
+			// Display the subtotal at the end of the shopping cart
+			else{
+				echo "<p style='text-align:right; font-size:20px'>
+			  	Subtotal = S$". number_format($subTotal, 2);
+			}	
+		}
+		echo "<br>";
+		echo "<br>";
+
+		// // Display the subtotal at the end of the shopping cart
+		// echo "<p style='text-align:right; font-size:20px'>
+		// 	  Subtotal = S$". number_format($subTotal, 2);
+		// $_SESSION["SubTotal"] = round($subTotal, 2);
+
+		// echo "<p>Content in items session variable:<br />";
+		// Foreach($_SESSION['Items'] as $key1=>$item){
+		// 	echo "items[". $key1 . "] : ";
+		// 	foreach($item as $key2=>$value2){
+		// 		echo $key2 . "=> " . $value2 . ", ";
+		// 	}
+		// 	echo "<br />";
+		// }
+		// echo "</p>";
 		
 		// Add PayPal Checkout button on the shopping cart page
 		// echo "<form method='post' action='checkoutProcess.php'>";
