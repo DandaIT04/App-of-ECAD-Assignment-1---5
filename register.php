@@ -164,8 +164,11 @@ function validateForm()
     <label for="pa"><b>Password Answer</b></label>
     <input class="form-control" type="password" placeholder="Enter password answer" name="pa" id="pa" required>   
 
-    <label for="personCountry"><b>Country</b></label>
+    <label for="personCountry"><b>Country [Ensure valid country for country code retrieval]</b></label>
     <input class="form-control" type="text" placeholder="Enter Country" name="personCountry" id="personCountry" onchange="checkTheCountry()" required>
+
+    <label for="countryExists"><b>Country/Phone Code [Automatic value retrieved from country]</b></label>
+    <input class="form-control" type="text" name="countryExists" id="countryExists" value="" readonly required>
 
     <label for="personName"><b>Name</b></label>
     <input class="form-control" type="text" placeholder="Enter Name" name="personName" id="personName" required>
