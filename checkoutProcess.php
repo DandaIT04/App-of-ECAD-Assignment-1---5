@@ -21,11 +21,12 @@ if($_POST) //Post Data received from Shopping cart page.
 		$paypal_data .= '&L_PAYMENTREQUEST_0_NUMBER'.$key.'='.urlencode($item["productId"]);
 	}
 	
-	// To Do 1A: Compute GST amount 7% for Singapore, round the figure to 2 decimal places
+	// Compute GST amount 8% for Singapore, round the figure to 2 decimal places
+    $_SESSION["Tax"] = round($_SESSION["SubTotal"]*0.08, 2);
 	
-	
-	// To Do 1B: Compute Shipping charge - S$2.00 per trip
-		
+	// Compute Shipping charge
+
+    $_SESSION["ShipCharge"] = 5.00;	
 	
 	//Data to be sent to PayPal
 	$padata = '&CURRENCYCODE='.urlencode($PayPalCurrencyCode).
@@ -117,7 +118,19 @@ if(isset($_GET["token"]) && isset($_GET["PayerID"]))
 		// End of To Do 5
 	
 		// To Do 2: Update shopcart table, close the shopping cart (OrderPlaced=1)
-		
+        $total = $_SESSION["SubTotal"] + $_SESSION["Tax"] + $_SESSION["ShipCharge"];
+        $qry = "UPDATE shopcart SET OrderPlaced=1, Quantity=?,
+                SubTotal=?, ShipCharge=?, Tax=?, Total=?
+                WHERE ShopCartID=?";
+        $stmt = $conn -> prepare($qry);
+        $stmt -> bind_param("iddddi", $_SESSION["NumCartItem"],
+                            $_SESSION["SubTotal"], $_SESSION["ShipCharge"],
+                            $_SESSION["Tax"], $total,
+                            $_SESSION["Cart"]);
+
+        $stmt->execute();
+        $stmt->close();
+
 		// End of To Do 2
 		
 		//We need to execute the "GetTransactionDetails" API Call at this point 
@@ -155,19 +168,36 @@ if(isset($_GET["token"]) && isset($_GET["PayerID"]))
 			
 			// To Do 3: Insert an Order record with shipping information
 			//          Get the Order ID and save it in session variable.
-			
+            $qry = "INSERT INTO orderdata (ShipName, ShipAddress, ShipCountry,
+                                           ShipEmail, ShopCartID)
+                    VALUES (?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($qry);
+            $stmt->bind_param(
+                "ssssi",
+                $ShipName,
+                $ShipAddress,
+                $ShipCountry,
+                $ShipEmail, $_SESSION["Cart"]
+            );
+            $stmt->execute();
+            $stmt -> close();
+            $qry = "SELECT LAST_INSERT_ID() AS OrderID";
+            $result = $conn->query($qry);
+            $row = $result->fetch_array();
+            $_SESSION["OrderID"] = $row["OrderID"];
 			// End of To Do 3
 				
 			$conn->close();
 				  
-			// To Do 4A: Reset the "Number of Items in Cart" session variable to zero.
-			
+			// Reset the "Number of Items in Cart" session variable to zero.
+            $_SESSION["NumCartItem"] = 0;
 	  		
-			// To Do 4B: Clear the session variable that contains Shopping Cart ID.
+			// TClear the session variable that contains Shopping Cart ID.
+            unset($_SESSION["Cart"]);
 			
-			
-			// To Do 4C: Redirect shopper to the order confirmed page.
-			
+			// Redirect shopper to the order confirmed page.
+            header("Location: orderConfirmed.php");
+            exit;
 		} 
 		else 
 		{
