@@ -92,88 +92,115 @@ $_SESSION['tempUpdatePhone'] = $theRow['Phone'];
 
 function validateForm()
 {
-
-    if (document.updateProfile.psw.value != "") {
-        if (document.updateProfile.psw.value.length < 8) {
-            alert("password must be at least 8 characters!");
-            return false;              // cancel submission 
-        }
-        if (document.updateProfile.psw2.value.length < 8) {
-            alert("password must be at least 8 characters!");
-            return false;              // cancel submission 
-        }
-        if (document.updateProfile.psw3.value.length < 8) {
-            alert("password must be at least 8 characters!");
-            return false;              // cancel submission 
-        }
-        if (document.updateProfile.psw1.value != document.updateProfile.psw2.value){
-            alert("password does not match!!");
-            return false;              // cancel submission             
-        }                                   
+  if (document.updateProfile.countryExists.value != ""){
+    if (document.updateProfile.countryExists.value.length < 1){
+      alert("Country cannot be found in rest countries API");
+      return false;
     }
+    if (document.updateProfile.personPhone.value.length < 1){
+      alert("Update your phone particulars!");
+      return false;
+    }    
+  }
 
-    if(document.updateProfile.personAddress.value != ""){
-        if (document.updateProfile.personAddress.value.length < 8) {
-        alert("address must be at least 8 characters!");
-        return false;              // cancel submission      
-    }        
-    }
+  if (document.updateProfile.psw.value != "") {
+      if (document.updateProfile.psw.value.length < 8) {
+          alert("password must be at least 8 characters!");
+          return false;              // cancel submission 
+      }
+      if (document.updateProfile.psw2.value.length < 8) {
+          alert("password must be at least 8 characters!");
+          return false;              // cancel submission 
+      }
+      if (document.updateProfile.psw3.value.length < 8) {
+          alert("password must be at least 8 characters!");
+          return false;              // cancel submission 
+      }
+      if (document.updateProfile.psw1.value != document.updateProfile.psw2.value){
+          alert("password does not match!!");
+          return false;              // cancel submission             
+      }                                   
+  }
 
-    if(document.updateProfile.personCountry.value != ""){
-        if (document.updateProfile.personCountry.value.length < 4) {
+  if(document.updateProfile.personAddress.value != ""){
+      if (document.updateProfile.personAddress.value.length < 8) {
+      alert("address must be at least 8 characters!");
+      return false;              // cancel submission      
+  }        
+  }
+
+  if(document.updateProfile.personCountry.value.length > 0){
+      if (document.updateProfile.personCountry.value.length < 4) {
         alert("country must be at least 4 characters!");
-        return false;              // cancel submission      
-    } 
-    }
+        return false;              // cancel submission
+      }     
+      if(document.updateProfile.countryExists.value.length<1){
+        alert("Due to country change, please wait for code assignment");
+        return false;         
+      }
+      if(document.updateProfile.personPhone.value.length<1){
+        alert("Due to country change, please input phone number");
+        return false;         
+      } 
+  } 
+  
 
-    if (document.updateProfile.personName.value != ""){
-        if (document.updateProfile.personName.value.length < 2) {
-        alert("address must be at least 2 characters!");
-        return false;              // cancel submission      
-    } 
-    }
-    
+  if (document.updateProfile.personName.value != ""){
+      if (document.updateProfile.personName.value.length < 2) {
+      alert("address must be at least 2 characters!");
+      return false;              // cancel submission      
+  } 
+  }
+  
 
-    if (document.updateProfile.personPhone.value != ""){
+  if (document.updateProfile.personPhone.value != ""){
     var str = document.updateProfile.personPhone.value;
     if (str.length != 8) {
       alert("Please enter a 8-digit phone number.");
       return false;
+
     }
-                      // cancel submission
+                    // cancel submission
     else if (str.substr(0,1) != "6" &&
-    str.substr(0,1) != "8" &&
-    str.substr(0,1) != "9" ) {
+      str.substr(0,1) != "8" &&
+      str.substr(0,1) != "9" ) {
       alert("phone number in Singapore should start with 6, 8 or 9.");
       return false; // cancel submission
-        }
-    }
-    
-    if (document.updateProfile.personBirth.value != ""){
-    
-    var d1 = new Date();
-    var d2 = new Date(document.updateProfile.personBirth.value);
-
-    var same = d1.getTime() === d2.getTime();
-
-    if (same === true){
-      alert("Invalid date!"); 
-      return false;      
     }
 
-    else if(same === false){
-      var age = d1.getFullYear() - d2.getFullYear();
-
-      if (age >= 16){
-        return true;
+    if (document.updateProfile.personCountry.value.length<4){
+      if(document.updateProfile.countryExists.value.length<1){
+        alert("Due to phone change, please input country and wait for code assignment");
+        return false;         
       }
+    }
+  }
+    
+  if (document.updateProfile.personBirth.value != ""){
+  
+  var d1 = new Date();
+  var d2 = new Date(document.updateProfile.personBirth.value);
 
-      else{
-        alert("You must be above 16 to register!"); 
-        return false;  
-      }
+  var same = d1.getTime() === d2.getTime();
 
-    }   
+  if (same === true){
+    alert("Invalid date!"); 
+    return false;      
+  }
+
+  else if(same === false){
+    var age = d1.getFullYear() - d2.getFullYear();
+
+    if (age >= 16){
+      return true;
+    }
+
+    else{
+      alert("You must be above 16 to register!"); 
+      return false;  
+    }
+
+  }   
   }    
     
 
@@ -205,6 +232,12 @@ function validateForm()
     <label for="pa"><b>Password Answer</b></label>
     <input class="form-control" type="password" placeholder="<?php echo $_SESSION['tempUpdatePwdA']?>" name="pa" id="pa">   
 
+    <label for="personCountry"><b>Country</b></label>
+    <input class="form-control" type="text" placeholder="<?php echo $_SESSION['tempUpdateCountry']?>" name="personCountry" id="personCountry" onchange="checkTheCountry()">
+
+    <label for="countryExists"><b>Country/Phone Code [Automatic value retrieved from country]</b></label>
+    <input class="form-control" type="text" name="countryExists" id="countryExists" value="" readonly>
+
     <label for="personName"><b>Name</b></label>
     <input class="form-control" type="text" placeholder="<?php echo $_SESSION['tempUpdateName']?>" name="personName" id="personName">
 
@@ -213,9 +246,6 @@ function validateForm()
     <br>
     <label for="personAddress"><b>Address</b></label>
     <input class="form-control" type="text" placeholder="<?php echo $_SESSION['tempUpdateAddress']?>" name="personAddress" id="personAddress">
-    
-    <label for="personCountry"><b>Country</b></label>
-    <input class="form-control" type="text" placeholder="<?php echo $_SESSION['tempUpdateCountry']?>" name="personCountry" id="personCountry">
     
     <label for="personPhone"><b>Phone</b></label>
     <input class="form-control" type="text" placeholder="<?php echo $_SESSION['tempUpdatePhone']?>" name="personPhone" id="personPhone">    
@@ -236,7 +266,7 @@ if (!empty($_POST))
     $address = $_POST["personAddress"];
     $country = $_POST["personCountry"];
     $birthdate = $_POST["personBirth"];
-    $phone = $_POST["personPhone"];
+    $phone = $_POST["countryExists"]." ".$_POST["personPhone"];
     $email = $_POST["email"];
     $pwdquestion = $_POST["pq"];
     $password = $_POST["psw"];
@@ -262,7 +292,30 @@ if (!empty($_POST))
             if ($my_array[$x] != null){
                 $qry = $insert_array[$x];
 
-                if ($x == 5){
+                if ($x == 4){
+                  if($my_array[$x] == $to_query[$x]){
+                    echo "<h3 style='color:red'>$my_array[$x] same as $to_query[$x]!</h3><br>";
+                }
+                else{
+                    if(strlen($my_array[$x]) > 1){
+
+                      $theRedirect = "goredirect"; 
+  
+                      $stmt = $conn->prepare($qry);
+                      $stmt->bind_param("ss",$my_array[$x],$_SESSION["ShopperID"]);
+                      $stmt->execute();
+                      $stmt->close();
+                      
+                      echo "<h3>$to_query[$x] changed to $my_array[$x] and its 4</h3><br>";
+  
+                      $URL="updateProfile.php";
+                      //echo "<script type='text/javascript'>document.location.href='{$URL}';</script>";
+                    }
+                   
+                  }
+                }
+
+                elseif ($x == 5){
                     if ($email == $_SESSION['tempUpdateEmail']){
                         echo "<h3 style='color:red'>Same Email detected!</h3><br>";
                     }
@@ -331,6 +384,91 @@ if (!empty($_POST))
 }
 
 ?>
+
+<script type="text/javascript">
+
+function checkTheCountry() {
+  document.getElementById("countryExists").value = "";
+  var x = document.getElementById("personCountry").value;
+
+  let myJson;
+
+  let newJson;
+
+  linkOne = "https://restcountries.com/v2/name/";
+  linkTwo = x;
+
+  finalLink = linkOne.concat(linkTwo);
+
+  fetch(finalLink)
+  .then(response => response.json())
+  .then((data) => {
+    myJson = data;
+  });
+
+  function data () {
+    if(myJson == undefined){
+    }
+    else{
+      let discovered = false;
+      let discovered1 = false;
+      for (i in myJson){
+        if (discovered === false && discovered1 === false){
+          if (myJson[i].callingCodes != undefined){
+            newJson = JSON.stringify(myJson[i].callingCodes);
+            if (newJson != ""){
+              discovered = true;
+
+              firstBracket = "(";
+              secondBracket = ")";
+
+              newJson = newJson.replace(/[^a-zA-Z0-9 ]/g, '');
+
+              firstBracket = firstBracket.concat(newJson);
+              
+              firstBracket = firstBracket.concat(secondBracket);
+
+              
+              document.getElementById("countryExists").value = firstBracket;
+            }
+          }
+          if (myJson[i].name != undefined){
+            newJson = JSON.stringify(myJson[i].name);
+            if(newJson != ""){
+              discovered1 = true;
+
+              document.getElementById("personCountry").value = newJson.replace(/[^a-zA-Z0-9 ]/g, '');
+            }
+          }
+        }
+        else{
+          clearInterval(loadData);
+          break;
+        }
+
+
+      }
+      clearInterval(loadData);
+      /*
+      clearInterval(loadData);
+
+      alert(newJson);
+
+      for (i in newJson){
+        if(newJson[i] != undefined){
+          alert(newJson[i]);
+        }
+
+        */
+      
+    }
+  }
+  
+  const loadData = setInterval(data,1000);
+
+}
+
+</script>
 
 
 <div class="product-slider">

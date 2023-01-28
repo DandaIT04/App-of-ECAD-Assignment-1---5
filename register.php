@@ -62,6 +62,11 @@ a {
 <script type="text/javascript">
 function validateForm()
 {
+  if (document.register.countryExists.value.length < 1){
+    alert("Country cannot be found in rest countries API");
+    return false;
+  }
+
   if (document.register.psw.value.length < 8) {
     alert("password must be at least 8 characters!");
     return false;              // cancel submission    
@@ -159,6 +164,9 @@ function validateForm()
     <label for="pa"><b>Password Answer</b></label>
     <input class="form-control" type="password" placeholder="Enter password answer" name="pa" id="pa" required>   
 
+    <label for="personCountry"><b>Country</b></label>
+    <input class="form-control" type="text" placeholder="Enter Country" name="personCountry" id="personCountry" onchange="checkTheCountry()" required>
+
     <label for="personName"><b>Name</b></label>
     <input class="form-control" type="text" placeholder="Enter Name" name="personName" id="personName" required>
 
@@ -167,9 +175,6 @@ function validateForm()
     <br>
     <label for="personAddress"><b>Address</b></label>
     <input class="form-control" type="text" placeholder="Enter Address" name="personAddress" id="personAddress" required>
-    
-    <label for="personCountry"><b>Country</b></label>
-    <input class="form-control" type="text" placeholder="Enter Country" name="personCountry" id="personCountry" required>
     
     <label for="personPhone"><b>Phone</b></label>
     <input class="form-control" type="text" placeholder="Enter Phone" name="personPhone" id="personPhone" required>    
@@ -192,6 +197,12 @@ function validateForm()
     <label for="pa"><b>Password Answer</b></label>
     <input class="form-control" type="password" placeholder="Enter password answer" name="pa" id="pa" value = "aaa" required>   
 
+    <label for="personCountry"><b>Country [Ensure valid country for country code retrieval]</b></label>
+    <input class="form-control" type="text" placeholder="Enter Country" name="personCountry" id="personCountry" onchange="checkTheCountry()" required>
+
+    <label for="countryExists"><b>Country/Phone Code [Automatic value retrieved from country]</b></label>
+    <input class="form-control" type="text" name="countryExists" id="countryExists" value="" readonly required>
+
     <label for="personName"><b>Name</b></label>
     <input class="form-control" type="text" placeholder="Enter Name" name="personName" id="personName" value = "aaa" required>
 
@@ -201,11 +212,8 @@ function validateForm()
     <label for="personAddress"><b>Address</b></label>
     <input class="form-control" type="text" placeholder="Enter Address" name="personAddress" id="personAddress" value = "aaaaaaaa" required>
     
-    <label for="personCountry"><b>Country</b></label>
-    <input class="form-control" type="text" placeholder="Enter Country" name="personCountry" id="personCountry" value = "aaaa" required>
-    
     <label for="personPhone"><b>Phone</b></label>
-    <input class="form-control" type="text" placeholder="Enter Phone" name="personPhone" id="personPhone" value = "99999999" required>
+    <input class="form-control" type="text" placeholder="Enter Phone" name="personPhone" id="personPhone" value = "aaaaaaaa" required>
     -->
     <hr>
     <button type="submit" value="submit" class="registerbtn">Register</button>
@@ -218,6 +226,91 @@ function validateForm()
     <br>
   </div>
 </form>
+
+<script type="text/javascript">
+
+function checkTheCountry() {
+  document.getElementById("countryExists").value = "";
+  var x = document.getElementById("personCountry").value;
+
+  let myJson;
+
+  let newJson;
+
+  linkOne = "https://restcountries.com/v2/name/";
+  linkTwo = x;
+
+  finalLink = linkOne.concat(linkTwo);
+
+  fetch(finalLink)
+  .then(response => response.json())
+  .then((data) => {
+    myJson = data;
+  });
+
+  function data () {
+    if(myJson == undefined){
+    }
+    else{
+      let discovered = false;
+      let discovered1 = false;
+      for (i in myJson){
+        if (discovered === false && discovered1 === false){
+          if (myJson[i].callingCodes != undefined){
+            newJson = JSON.stringify(myJson[i].callingCodes);
+            if (newJson != ""){
+              discovered = true;
+
+              firstBracket = "(";
+              secondBracket = ")";
+
+              newJson = newJson.replace(/[^a-zA-Z0-9 ]/g, '');
+
+              firstBracket = firstBracket.concat(newJson);
+              
+              firstBracket = firstBracket.concat(secondBracket);
+
+              
+              document.getElementById("countryExists").value = firstBracket;
+            }
+          }
+          if (myJson[i].name != undefined){
+            newJson = JSON.stringify(myJson[i].name);
+            if(newJson != ""){
+              discovered1 = true;
+
+              document.getElementById("personCountry").value = newJson.replace(/[^a-zA-Z0-9 ]/g, '');
+            }
+          }
+        }
+        else{
+          clearInterval(loadData);
+          break;
+        }
+
+
+      }
+      clearInterval(loadData);
+      /*
+      clearInterval(loadData);
+
+      alert(newJson);
+
+      for (i in newJson){
+        if(newJson[i] != undefined){
+          alert(newJson[i]);
+        }
+
+        */
+      
+    }
+  }
+  
+  const loadData = setInterval(data,1000);
+
+}
+
+</script>
 
 <!-- <img src="Images/welcome2mamaya.jpg" class="img-fluid" 
      style="display:block; margin:auto;"/>"; -->
