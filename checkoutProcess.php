@@ -44,7 +44,7 @@ if($_POST) //Post Data received from Shopping cart page.
 				                                 $_SESSION["Tax"] + 
 												 $_SESSION["Delivery"]).
 			  '&PAYMENTREQUEST_0_ITEMAMT='.urlencode($_SESSION["SubTotal"]). 
-			  '&PAYMENTREQUEST_0_SHIPPINGAMT='.urlencode($_SESSION["ShipCharge"]). 
+			  '&PAYMENTREQUEST_0_SHIPPINGAMT='.urlencode($_SESSION["Delivery"]). 
 			  '&PAYMENTREQUEST_0_TAXAMT='.urlencode($_SESSION["Tax"]).
 			  '&BRANDNAME='.urlencode("Little Coco").
 			  $paypal_data.				
@@ -131,13 +131,13 @@ if(isset($_GET["token"]) && isset($_GET["PayerID"]))
 		  }
 	
 		//Update shopcart table, close the shopping cart (OrderPlaced=1)
-        $total = $_SESSION["SubTotal"] + $_SESSION["Tax"] + $_SESSION["ShipCharge"];
+        $total = $_SESSION["SubTotal"] + $_SESSION["Tax"] + $_SESSION["Delivery"];
         $qry = "UPDATE shopcart SET OrderPlaced=1, Quantity=?,
                 SubTotal=?, ShipCharge=?, Tax=?, Total=?
                 WHERE ShopCartID=?";
         $stmt = $conn -> prepare($qry);
         $stmt -> bind_param("iddddi", $_SESSION["NumCartItem"],
-                            $_SESSION["SubTotal"], $_SESSION["ShipCharge"],
+                            $_SESSION["SubTotal"], $_SESSION["Delivery"],
                             $_SESSION["Tax"], $total,
                             $_SESSION["Cart"]);
 
