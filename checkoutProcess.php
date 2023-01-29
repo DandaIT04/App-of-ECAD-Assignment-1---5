@@ -1,5 +1,7 @@
 <?php
+namespace Checkout;
 session_start();
+
 include("header.php"); // Include the Page Layout header
 include_once("myPayPal.php"); // Include the file that contains PayPal settings
 include_once("mysql_conn.php"); 
@@ -40,11 +42,11 @@ if($_POST) //Post Data received from Shopping cart page.
 			  '&PAYMENTREQUEST_0_CURRENCYCODE='.urlencode($PayPalCurrencyCode).
 			  '&PAYMENTREQUEST_0_AMT='.urlencode($_SESSION["SubTotal"] +
 				                                 $_SESSION["Tax"] + 
-												 $_SESSION["ShipCharge"]).
+												 $_SESSION["Delivery"]).
 			  '&PAYMENTREQUEST_0_ITEMAMT='.urlencode($_SESSION["SubTotal"]). 
 			  '&PAYMENTREQUEST_0_SHIPPINGAMT='.urlencode($_SESSION["ShipCharge"]). 
 			  '&PAYMENTREQUEST_0_TAXAMT='.urlencode($_SESSION["Tax"]). 	
-			  '&BRANDNAME='.urlencode("Mamaya e-BookStore").
+			  '&BRANDNAME='.urlencode("Little Coco").
 			  $paypal_data.				
 			  '&RETURNURL='.urlencode($PayPalReturnURL ).
 			  '&CANCELURL='.urlencode($PayPalCancelURL);	
@@ -101,10 +103,10 @@ if(isset($_GET["token"]) && isset($_GET["PayerID"]))
 			  $paypal_data.	
 			  '&PAYMENTREQUEST_0_ITEMAMT='.urlencode($_SESSION["SubTotal"]).
               '&PAYMENTREQUEST_0_TAXAMT='.urlencode($_SESSION["Tax"]).
-              '&PAYMENTREQUEST_0_SHIPPINGAMT='.urlencode($_SESSION["ShipCharge"]).
+              '&PAYMENTREQUEST_0_SHIPPINGAMT='.urlencode($_SESSION["Delivery"]).
 			  '&PAYMENTREQUEST_0_AMT='.urlencode($_SESSION["SubTotal"] + 
 			                                     $_SESSION["Tax"] + 
-								                 $_SESSION["ShipCharge"]).
+												 $_SESSION["Delivery"]).
 			  '&PAYMENTREQUEST_0_CURRENCYCODE='.urlencode($PayPalCurrencyCode);
 	
 	//We need to execute the "DoExpressCheckoutPayment" at this point 
@@ -142,8 +144,6 @@ if(isset($_GET["token"]) && isset($_GET["PayerID"]))
         $stmt->execute();
         $stmt->close();
 
-		// End of To Do 2
-		
 		//We need to execute the "GetTransactionDetails" API Call at this point 
 		//to get customer details
 		$transactionID = urlencode(
