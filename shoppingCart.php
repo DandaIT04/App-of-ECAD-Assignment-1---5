@@ -73,7 +73,8 @@ if (isset($_SESSION["Cart"])) {
 			echo "Quantity: <input type='number' name='quantity' value='1'
 								min='1' max='10' style='width:40px' required />";
 			echo "&nbsp;";
-			echo "<button type='submit'> Update </button>";
+			echo "&nbsp;";
+			echo "<button style='border-radius: 20px; padding:5px 10px 5px 10px' type='submit'> Update </button>";
 			echo "</form>";
 			echo "</td>";
 			echo "</tr>";
@@ -119,7 +120,7 @@ if (isset($_SESSION["Cart"])) {
 			echo "<input type='radio' name='deliverType' value='express'> Express Delivery (S$10.00)";
 			echo "</label>";
 			echo "<br>";
-			echo "<input type='submit' value='Update Delivery Type'>";
+			echo "<input style='border-radius: 20px; padding:10px 20px 10px 20px' type='submit' value='Update Delivery Type'>";
 			echo "</form>";
 			if (isset($_POST["deliverType"])) {
 				$delivery = $_POST["deliverType"];  
@@ -135,6 +136,7 @@ if (isset($_SESSION["Cart"])) {
 			// Basic Requirment
 			// Display the subtotal at the end of the shopping cart
 			else{
+				echo "<br>";
 				echo "<p style='text-align:right; font-size:20px'>
 			  	Subtotal = S$". number_format($subTotal, 2);
 			}	
@@ -164,7 +166,7 @@ if (isset($_SESSION["Cart"])) {
 		// echo "</form></p>";
 
 		echo "<form method='post' action='checkoutConfirmation.php'>
-				<input type='submit' class='checkout'
+				<input style='float:right; border-radius: 20px; padding:10px 20px 10px 20px' type='submit' class='checkout'
 				name='checkout-btn' id='checkout-btn'
 				value='Checkout'/>
 	  			</form>";

@@ -21,7 +21,7 @@ function addItem() {
 		header ("Location: login.php");
 		exit;
 	}
-	// TO DO 1
+
 	// Write code to implement: if a user clicks on "Add to Cart" button, insert/update the 
 	// database and also the session variable for counting number of items in shopping cart.
 	include_once("mysql_conn.php"); // Establish database connection handle: $conn
@@ -48,7 +48,7 @@ function addItem() {
 	$stmt->execute();
 	$result = $stmt->get_result();
 	$stmt->close();
-	$addNewIten = 0;
+	$addNewItem = 0;
 	if ($result->num_rows > 0){//Selectde product exists in shopping cart
 		//increase the quantity of purchase
 		$qry = "UPDATE ShopCartItem SET Quantity=LEAST(Quantity+?, 10)
@@ -60,14 +60,38 @@ function addItem() {
 		$stmt->close();
 	}
 	else {//Selected product has yet to be added to shopping cart
-		$qry = "INSERT INTO ShopCartItem(ShopCartID, ProductID, Price, Name, Quantity)
-		SELECT ?, ?, Price, ProductTitle, ? FROM Product WHERE ProductID=?";
-		$stmt = $conn->prepare($qry);
-		// "iiii" - 4 integers
-		$stmt->bind_param("iiii", $_SESSION["Cart"], $pid, $quantity, $pid);
-		$stmt->execute();
-		$stmt->close();
-		$addNewItem = 1;
+
+	$qry = "SELECT * from product where ProductID=?";
+	$stmt = $conn->prepare($qry);
+	$stmt->bind_param("i", $pid); 	// "i" - integer 
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$stmt->close();
+
+		// To Do 1:  Display Product information. Starting ....
+		while ($row = $result->fetch_array()){
+
+			if ($row["OfferedPrice"] != NULL) {
+				$qry = "INSERT INTO ShopCartItem(ShopCartID, ProductID, Price, Name, Quantity)
+				SELECT ?, ?, OfferedPrice, ProductTitle, ? FROM Product WHERE ProductID=? AND Offered!= 0";
+				$stmt = $conn->prepare($qry);
+				// "iiii" - 4 integers
+				$stmt->bind_param("iiii", $_SESSION["Cart"], $pid, $quantity, $pid);
+				$stmt->execute();
+				$stmt->close();
+				$addNewItem = 1;
+			}
+			else{
+				$qry = "INSERT INTO ShopCartItem(ShopCartID, ProductID, Price, Name, Quantity)
+				SELECT ?, ?, Price, ProductTitle, ? FROM Product WHERE ProductID=?";
+				$stmt = $conn->prepare($qry);
+				// "iiii" - 4 integers
+				$stmt->bind_param("iiii", $_SESSION["Cart"], $pid, $quantity, $pid);
+				$stmt->execute();
+				$stmt->close();
+				$addNewItem = 1;
+			}
+		}
 	}
   	$conn->close();
   	// Update session variable used for counting number of items in the shopping cart.
@@ -89,7 +113,6 @@ function updateItem() {
 		header ("Location: login.php");
 		exit;
 	}
-	// TO DO 2
 	// Write code to implement: if a user clicks on "Update" button, update the database
 	// and also the session variable for counting number of items in shopping cart.
 	$cartid = $_SESSION["Cart"];
@@ -112,7 +135,7 @@ function removeItem() {
 		header ("Location: login.php");
 		exit;
 	}
-	// TO DO 3
+
 	// Write code to implement: if a user clicks on "Remove" button, update the database
 	// and also the session variable for counting number of items in shopping cart.
 	$cartid = $_SESSION["Cart"];
