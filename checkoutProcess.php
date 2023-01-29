@@ -10,14 +10,14 @@ if($_POST) //Post Data received from Shopping cart page.
 {
 	// Check to ensure each product item saved in the associative
 	// array is not out of stock
-	// foreach ($_SESSION['Items'] as $key => $item) {
-	// 	$qry = "SELECT Quantity FROM product WHERE ProductID=$item[productId]";
-	// 	$result = $conn->query($qry);
+	foreach ($_SESSION['Items'] as $key => $item) {
+		$qry = "SELECT Quantity FROM product WHERE ProductID=$item[productId]";
+		$result = $conn->query($qry);
 
-	// 	if ($result->num_rows > 0) {
-    //         echo ($result);
-	// 	}
-	// }
+		if ($conn->num_rows($result) > 0) {
+			echo ($result);
+		}
+	}
 	
 	$paypal_data = '';
 	// Get all items from the shopping cart, concatenate to the variable $paypal_data
@@ -32,8 +32,6 @@ if($_POST) //Post Data received from Shopping cart page.
 	// Compute GST amount 8% for Singapore, round the figure to 2 decimal places
     $_SESSION["Tax"] = round($_SESSION["SubTotal"]*0.08, 2);
 	
-	// Compute Shipping charge
-    $_SESSION["ShipCharge"] = 5.00;	
 	
 	//Data to be sent to PayPal
 	$padata = '&CURRENCYCODE='.urlencode($PayPalCurrencyCode).
@@ -46,7 +44,6 @@ if($_POST) //Post Data received from Shopping cart page.
 			  '&PAYMENTREQUEST_0_ITEMAMT='.urlencode($_SESSION["SubTotal"]). 
 			  '&PAYMENTREQUEST_0_SHIPPINGAMT='.urlencode($_SESSION["ShipCharge"]). 
 			  '&PAYMENTREQUEST_0_TAXAMT='.urlencode($_SESSION["Tax"]).
-			  '&PAYMENTREQUEST_0_ITEMAMT'.urlencode($item["quantity"]).	
 			  '&BRANDNAME='.urlencode("Little Coco").
 			  $paypal_data.				
 			  '&RETURNURL='.urlencode($PayPalReturnURL ).
@@ -124,12 +121,12 @@ if(isset($_GET["token"]) && isset($_GET["PayerID"]))
 		// after successful checkout
 		$qry = "SELECT * from shopcartitem WHERE ShopCartID=$_SESSION[Cart]";
 		$result = $conn->query($qry);
-		// if ($conn->num_rows($result) > 0) {
-		// 	while ($row = $conn->fetch_array($result)) {
-		// 		$qry = "UPDATE product SET Quantity = Quantity-$row[Quantity] WHERE ProductID=$row[ProductID]";
-		// 		$conn->query($qry);
-		// 	}
-		// }
+		if ($conn->num_rows($result) > 0) {
+			while ($row = $conn->fetch_array($result)) {
+				$qry = "UPDATE product SET Quantity = Quantity-$row[Quantity] WHERE ProductID=$row[ProductID]";
+				$conn->query($qry);
+			}
+		}
 	
 		//Update shopcart table, close the shopping cart (OrderPlaced=1)
         $total = $_SESSION["SubTotal"] + $_SESSION["Tax"] + $_SESSION["ShipCharge"];
