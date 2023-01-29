@@ -125,12 +125,17 @@ if (isset($_SESSION["Cart"])) {
 			if (isset($_POST["deliverType"])) {
 				$delivery = $_POST["deliverType"];  
 				if ($delivery == "standard") {
+					$deliveryTotal = $_SESSION["SubTotal"] + 5;
 					echo "<p style='text-align:right; font-size:20px'>
-							Subtotal = S$". number_format(($_SESSION["SubTotal"] + 5), 2);
+							Subtotal = S$". number_format($deliveryTotal, 2);
+					$_SESSION["SubTotal"] = $deliveryTotal;
+
 				}
 				else if ($delivery == "express"){
+					$deliveryTotal = $_SESSION["SubTotal"] + 10;
 					echo "<p style='text-align:right; font-size:20px'>
-							Subtotal = S$". number_format(($_SESSION["SubTotal"] + 10), 2);
+							Subtotal = S$". number_format($deliveryTotal, 2);
+							$_SESSION["SubTotal"] = $deliveryTotal;
 				}
 			}
 			// Basic Requirment
