@@ -18,7 +18,6 @@ if (isset($_POST["deliverType"])) {
         $_SESSION["Delivery"] = 10;
     }
 }
-echo "$deliveryType";
 $delivery = $_SESSION["Delivery"];
 $tax = round($_SESSION["SubTotal"]*0.08, 2);
 $_SESSION["TotalAmt"] = $subTotal + $delivery + $tax;
