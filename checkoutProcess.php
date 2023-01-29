@@ -12,16 +12,16 @@ if($_POST) //Post Data received from Shopping cart page.
 {
 	// Check to ensure each product item saved in the associative
 	// array is not out of stock
-	foreach ($_SESSION['Items'] as $key => $item) {
-		$qry = "SELECT Quantity FROM product WHERE ProductID=$item[productId]";
-		$result = $conn->query($qry);
+	// foreach ($_SESSION['Items'] as $key => $item) {
+	// 	$qry = "SELECT Quantity FROM product WHERE ProductID=$item[productId]";
+	// 	$result = $conn->query($qry);
 
-		if ($result->num_rows > 0) {
-            $row2 = $result->fetch_array();
-            $tempQty = $row2["Quantity"];
-      		echo($tempQty);      
-    }
-	}
+	// 	if ($result->num_rows > 0) {
+    //         $row2 = $result->fetch_array();
+    //         $tempQty = $row2["Quantity"];
+    //   		echo($tempQty);      
+    // }
+	// }
 	
 	$paypal_data = '';
 	// Get all items from the shopping cart, concatenate to the variable $paypal_data

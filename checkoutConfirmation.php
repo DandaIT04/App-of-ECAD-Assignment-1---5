@@ -5,16 +5,43 @@ namespace Checkout;
 header('Cache-Control: no cache'); //no cache
 session_cache_limiter('private_no_expire'); // works
 include_once("cartFunction.php");
+include_once("mysql_conn.php"); 
 include("header.php"); // Include the Page Layout header
 
+// Check inventory stock
+$qry = "SELECT p.Quantity AS PQ, 
+				   sc.Quantity AS SCQ,
+				   p.ProductID AS ProductID,
+				   p.ProductTitle AS ProductTitle
+			FROM product p 
+			INNER JOIN shopcartitem sc ON p.ProductID = sc.ProductID WHERE sc.ShopCartID = ?;";
 
-if (! isset($_SESSION["ShopperID"])) { // Check if user logged in 
-	// redirect to login page if the session variable shopperid is not set
-	header ("Location: login.php");
-	exit;
+$stmt = $conn->prepare($qry);
+$stmt->bind_param("i", $_SESSION["Cart"]);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$stmt->close();
+
+// Print message to return back to shopping cart
+$noStock = false;
+while ($row = $result->fetch_array()) {
+    $remaining = $row["PQ"] - $row["SCQ"];
+    if ($remaining < 0 )
+    {
+        $noStock = true;
+        echo "<p style='font-size:20px'>Sorry, $row[ProductTitle] is out of stock! There are only $row[PQ] left, please update your cart.</p><br />";
+    }
 }
+if ($noStock == true)
+{
+    echo "Please <a href='shoppingCart.php'><u>return to shopping cart</u></a> to amend your purchase.<br />";
+    include("footer.php");
+    exit;
+}	
 
-echo "<div id='orderSummary' style='margin:auto'>"; // Start a container
+
+
 if (isset($_SESSION["Cart"])) {
 	include_once("mysql_conn.php");
 	// Retrieve from database and display shopping cart in a table
