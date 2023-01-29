@@ -1,6 +1,7 @@
 <?php 
 // Include the code that contains shopping cart's functions.
 // Current session is detected in "cartFunctions.php, hence need not start session here.
+namespace Checkout;
 include_once("cartFunction.php");
 include("header.php"); // Include the Page Layout header
 
@@ -87,44 +88,7 @@ if (isset($_SESSION["Cart"])) {
 		echo "<br>";
 		echo "<br>";
 
-		// Delivery Chargings
-		if ($_SESSION["SubTotal"] > 200) {
-			echo "<br>";
-			echo "<p style='text-align:left; font-size:15px; color:red;' > Delivery Charges are waived for orders above $200";
-		}
-		else {
-			echo "<p style='text-align:left; font-size:20px'><strong> Please select your delivery mode: </strong>";
-			echo "<br>";
-			echo "<form style='text-align:left;' action='' method='post'>";
-			echo "<label style='font-size:16px'>";
-			echo "<input style='margin:10px' method='post' type='radio' name='deliverType' value='standard' checked> Normal Delivery (S$5.00)";
-			echo "<p style='text-align:left; margin:10px; font-size:14px'><em>Delivered within 2 working days after your order is placed. </em>";
-			echo "</label>";
-			echo "<br>";
-			echo "<br>";
-			echo "<label style='font-size:16px'>";
-			echo "<input method='post' type='radio' name='deliverType' value='express'> Express Delivery (S$10.00)";
-			echo "<p style='text-align:left; margin:10px; font-size:14px'><em> Delivered within 24 hours after an order is placed.</em>";
-			echo "</label>";
-			echo "</form>";
-
-			if (isset($_POST["deliverType"])) {
-				$delivery = $_POST["deliverType"];  
-				if ($delivery == "standard") {
-					echo "<p style='text-align:right; font-size:20px'>
-							Subtotal = S$". number_format(($_SESSION["SubTotal"] + 5), 2);
-				}
-				else if ($delivery == "express"){
-					echo "<p style='text-align:right; font-size:20px'>
-							Subtotal = S$". number_format(($_SESSION["SubTotal"] + 10), 2);
-				}
-			}
-		}
-		echo "<br>";
-		echo "<br>";
-
-	}
-		//Shipping Address
+	//Shipping Address
 		//Get details for user
 		$tempQryCheck = "SELECT * FROM Shopper WHERE ShopperID = ?";
 
@@ -151,55 +115,89 @@ if (isset($_SESSION["Cart"])) {
 		//Name
 		echo "<div style='margin:10px'>";
 		echo "<label for='name' style='font-size:16px'>Name: </label><br>";
-		echo "<input style='width:150%' type='text' id='name' name='name' value='$tempName' autocomplete='name' required enterkeyhint='next'>";
+		echo "<input style='width:80%' type='text' id='name' name='name' value='$tempName' autocomplete='name' required enterkeyhint='next'>";
 		echo "</div>";
 
 		//Phone Number
 		echo "<div style='margin:10px'>";
 		echo "<label for='phone' style='font-size:16px'>Phone Number: </label><br>";
-		echo "<input style='width:150%' type='tel' id='phone' name='phone' value='$tempPhone' autocomplete='phone' required enterkeyhint='next'></input>";
+		echo "<input style='width:80%' type='tel' id='phone' name='phone' value='$tempPhone' autocomplete='phone' required enterkeyhint='next'></input>";
 		echo "</div>";
 
 		//Email
 		echo "<div style='margin:10px'>";
 		echo "<label for='email' style='font-size:16px'>Email: </label><br>";
-		echo "<input style='width:150%' type='email' id='email' name='email' value='$tempEmail' autocomplete='email' required enterkeyhint='next'></input>";
+		echo "<input style='width:80%' type='email' id='email' name='email' value='$tempEmail' autocomplete='email' required enterkeyhint='next'></input>";
 		echo "</div>";
 
 		//Country
 		echo "<div style='margin:10px'>";
 		echo "<label for='country' style='font-size:16px'>Country (only delivers to Singapore): </label><br>";
-		echo "<input style='width:150%' type='country' id='country' name='country' value='Singapore' readonly='readonly' required enterkeyhint='next'></input>";
+		echo "<input style='width:80%' type='country' id='country' name='country' value='Singapore' readonly='readonly' required enterkeyhint='next'></input>";
 		echo "</div>";
 
 		//Address
 		echo "<div style='margin:10px'>";
 		echo "<label for='street-address' style='font-size:16px'>Street address: </label><br>";
-		echo "<input style='width:150%' type='text' id='street-address' name='street-address' value='$tempAddress' autocomplete='street-address' required enterkeyhint='next'></input>";
+		echo "<input style='width:80%' type='text' id='street-address' name='street-address' value='$tempAddress' autocomplete='street-address' required enterkeyhint='next'></input>";
 		echo "</div>";
 
 		//Zipcode
 		echo "<div style='margin:10px'>";
 		echo "<label for='postal-code' style='font-size:16px'>Postal Code (optional): </label><br>";
-		echo "<input style='width:150%' id='postal-code' name='postal-code' enterkeyhint='next'></input>";
+		echo "<input style='width:80%' id='postal-code' name='postal-code' enterkeyhint='next'></input>";
 		echo "</div>";
-
 		
 		echo "</form>";
 
-		echo "<button style='margin:10px' type='enter' form='addressForm' value='enter'>Enter</button>";
 
 		echo "</div>";
+		echo "<br>";
+		echo "<br>";
 
 
+		// Delivery Chargings
+		if ($_SESSION["SubTotal"] > 200) {
+				echo "<br>";
+				echo "<p style='text-align:left; font-size:15px; color:red;' > Delivery Charges are waived for orders above $200";
+				$_SESSION["Delivery"] = 0;
+				echo "<form style='text-align:left;' action='payment.php' method='post'>";
+				echo "<input style='border-radius: 20px; padding:10px 20px 10px 20px' name='submit' type='submit' value='Proceed to payment'>";
+				echo "</form>";
 
+		}
+		else {
+				echo "<p style='text-align:left; font-size:20px'><strong> Please select your delivery mode: </strong>";
+				echo "<br>";
+				echo "<form style='text-align:left;' action='payment.php' method='post'>";
+				echo "<label style='font-size:16px'>";
+				echo "<input style='margin:10px' type='radio' name='deliverType' value='normal' checked> Normal Delivery (S$5.00)";
+				echo "<p style='text-align:left; margin:10px; font-size:14px'><em>Delivered within 2 working days after your order is placed. </em>";
+				echo "</label>";
+				echo "<br>";
+				echo "<br>";
+				echo "<label style='font-size:16px'>";
+				echo "<input type='radio' name='deliverType' value='express'> Express Delivery (S$10.00)";
+				echo "<p style='text-align:left; margin:10px; font-size:14px'><em> Delivered within 24 hours after an order is placed.</em>";
+				echo "</label>";
+				echo "<br>";
+				echo "<br>";
+				echo "<input style='border-radius: 20px; padding:10px 20px 10px 20px' type='submit' value='Proceed to payment'>";
+				echo "</form>";
 
-		// Add PayPal Checkout button on the shopping cart page
-		// echo "<form method='post' action='checkoutProcess.php'>";
-		// echo "<input type='image' style='float:right;'
-		// 				src='https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif'>";
-		// echo "</form></p>";
+				
+				}
+				
 
+				
+			
+		
+		echo "<br>";
+		echo "<br>";
+		
+	}
+		
+		
 		$conn->close(); // Close database connection
 	}
 
