@@ -88,7 +88,7 @@ a {
      style="display:block; margin:auto;"/>"; -->
 
 <?php 
-include("promotion.php");
+
 // Include the Page Layout footer
 include("footer.php"); 
 ?>
