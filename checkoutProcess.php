@@ -14,9 +14,11 @@ if($_POST) //Post Data received from Shopping cart page.
 		$qry = "SELECT Quantity FROM product WHERE ProductID=$item[productId]";
 		$result = $conn->query($qry);
 
-		if ($conn->num_rows($result) > 0) {
-			echo ($result);
-		}
+		if ($result->num_rows > 0) {
+            $row2 = $result->fetch_array();
+            $tempQty = $row2["Quantity"];
+      		echo($tempQty);      
+    }
 	}
 	
 	$paypal_data = '';
@@ -121,12 +123,12 @@ if(isset($_GET["token"]) && isset($_GET["PayerID"]))
 		// after successful checkout
 		$qry = "SELECT * from shopcartitem WHERE ShopCartID=$_SESSION[Cart]";
 		$result = $conn->query($qry);
-		if ($conn->num_rows($result) > 0) {
-			while ($row = $conn->fetch_array($result)) {
-				$qry = "UPDATE product SET Quantity = Quantity-$row[Quantity] WHERE ProductID=$row[ProductID]";
-				$conn->query($qry);
+		if ($result->num_rows > 0) {
+			while ($row = $result->fetch_array()) {
+			  $qry = "UPDATE product SET Quantity = Quantity-$row[Quantity] WHERE ProductID=$row[ProductID]";
+			  $conn->query($qry);
 			}
-		}
+		  }
 	
 		//Update shopcart table, close the shopping cart (OrderPlaced=1)
         $total = $_SESSION["SubTotal"] + $_SESSION["Tax"] + $_SESSION["ShipCharge"];
