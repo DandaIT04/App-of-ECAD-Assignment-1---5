@@ -97,6 +97,6 @@ else{
 </script>
 
 <?php
-include("promotion.php");
+
 include("footer.php");
 ?>
