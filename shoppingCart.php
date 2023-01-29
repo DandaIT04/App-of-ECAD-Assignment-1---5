@@ -102,8 +102,12 @@ if (isset($_SESSION["Cart"])) {
 		$_SESSION["SubTotalQ"] = round($subTotalQuantity);	
 		echo "<br>";
 		echo "<br>";
+		echo "<p style='text-align:right; font-size:20px'>
+			  	Subtotal = S$". number_format($subTotal, 2);
+
 		// Additional Requirment
 		// Delivery Chargings
+<<<<<<< Updated upstream
 		if ($_SESSION["SubTotal"] > 200) {
 			echo "<br>";
 			echo "<p style='text-align:right; font-size:15px; color:red;' > Delivery Charges are waived for orders above $200";
@@ -148,6 +152,47 @@ if (isset($_SESSION["Cart"])) {
 		}
 		echo "<br>";
 		echo "<br>";
+=======
+		// if ($_SESSION["SubTotal"] > 200) {
+		// 	echo "<br>";
+		// 	echo "<p style='text-align:right; font-size:15px; color:red;' > Delivery Charges are waived for orders above $200";
+		// }
+		// else {
+		// 	echo "<p style='text-align:right; font-size:15px'> Please Select Delivery Mode";
+		// 	echo "<br>";
+		// 	echo "<form style='text-align:right;' action='' method='post'>";
+		// 	echo "<label>";
+		// 	echo "<input method='post' type='radio' name='deliverType' value='standard'> Standard Delivery (S$5.00)";
+		// 	echo "</label>";
+		// 	echo "<br>";
+		// 	echo "<label>";
+		// 	echo "<input type='radio' name='deliverType' value='express'> Express Delivery (S$10.00)";
+		// 	echo "</label>";
+		// 	echo "<br>";
+		// 	echo "<input style='border-radius: 20px; padding:10px 20px 10px 20px' type='submit' value='Update Delivery Type'>";
+		// 	echo "</form>";
+		// 	if (isset($_POST["deliverType"])) {
+		// 		$delivery = $_POST["deliverType"];  
+		// 		if ($delivery == "standard") {
+		// 			echo "<p style='text-align:right; font-size:20px'>
+		// 					Subtotal = S$". number_format(($_SESSION["SubTotal"] + 5), 2);
+		// 		}
+		// 		else if ($delivery == "express"){
+		// 			echo "<p style='text-align:right; font-size:20px'>
+		// 					Subtotal = S$". number_format(($_SESSION["SubTotal"] + 10), 2);
+		// 		}
+		// 	}
+		// 	// Basic Requirment
+		// 	// Display the subtotal at the end of the shopping cart
+		// 	else{
+		// 		echo "<br>";
+		// 		echo "<p style='text-align:right; font-size:20px'>
+		// 	  	Subtotal = S$". number_format($subTotal, 2);
+		// 	}	
+		// }
+		// echo "<br>";
+		// echo "<br>";
+>>>>>>> Stashed changes
 
 		// // Display the subtotal at the end of the shopping cart
 		// echo "<p style='text-align:right; font-size:20px'>
