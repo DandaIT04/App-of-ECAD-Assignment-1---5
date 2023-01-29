@@ -1,5 +1,7 @@
 <?php 
 namespace Checkout;
+header('Cache-Control: no cache'); //no cache
+session_cache_limiter('private_no_expire'); // works
 // Include the code that contains shopping cart's functions.
 // Current session is detected in "cartFunctions.php, hence need not start session here.
 include_once("cartFunction.php");

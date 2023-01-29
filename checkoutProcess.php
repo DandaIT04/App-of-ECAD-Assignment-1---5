@@ -1,5 +1,7 @@
 <?php
 namespace Checkout;
+header('Cache-Control: no cache'); //no cache
+session_cache_limiter('private_no_expire'); // works
 session_start();
 
 include("header.php"); // Include the Page Layout header
