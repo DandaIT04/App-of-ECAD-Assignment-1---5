@@ -107,51 +107,51 @@ if (isset($_SESSION["Cart"])) {
 
 		// Additional Requirment
 		// Delivery Chargings
-		if ($_SESSION["SubTotal"] > 200) {
-			echo "<br>";
-			echo "<p style='text-align:right; font-size:15px; color:red;' > Delivery Charges are waived for orders above $200";
-			echo "<br>";
-				echo "<p style='text-align:right; font-size:20px'>
-			  	Subtotal = S$". number_format($_SESSION["SubTotal"], 2);
-		}
-		else {
-			echo "<p style='text-align:right; font-size:15px'> Please Select Delivery Mode";
-			echo "<br>";
-			echo "<form style='text-align:right;' action='' method='post'>";
-			echo "<label>";
-			echo "<input method='post' type='radio' name='deliverType' value='standard'> Standard Delivery (S$5.00)";
-			echo "</label>";
-			echo "<br>";
-			echo "<label>";
-			echo "<input type='radio' name='deliverType' value='express'> Express Delivery (S$10.00)";
-			echo "</label>";
-			echo "<br>";
-			echo "<input style='border-radius: 20px; padding:10px 20px 10px 20px' type='submit' value='Update Delivery Type'>";
-			echo "</form>";
-			if (isset($_POST["deliverType"])) {
-				$delivery = $_POST["deliverType"];  
-				if ($delivery == "standard") {
-					$deliveryTotal = $_SESSION["SubTotal"] + 5;
-					echo "<p style='text-align:right; font-size:20px'>
-							Subtotal = S$". number_format($deliveryTotal, 2);
-					$_SESSION["SubTotal"] = $deliveryTotal;
+		// if ($_SESSION["SubTotal"] > 200) {
+		// 	echo "<br>";
+		// 	echo "<p style='text-align:right; font-size:15px; color:red;' > Delivery Charges are waived for orders above $200";
+		// 	echo "<br>";
+		// 		echo "<p style='text-align:right; font-size:20px'>
+		// 	  	Subtotal = S$". number_format($_SESSION["SubTotal"], 2);
+		// }
+		// else {
+		// 	echo "<p style='text-align:right; font-size:15px'> Please Select Delivery Mode";
+		// 	echo "<br>";
+		// 	echo "<form style='text-align:right;' action='' method='post'>";
+		// 	echo "<label>";
+		// 	echo "<input method='post' type='radio' name='deliverType' value='standard'> Standard Delivery (S$5.00)";
+		// 	echo "</label>";
+		// 	echo "<br>";
+		// 	echo "<label>";
+		// 	echo "<input type='radio' name='deliverType' value='express'> Express Delivery (S$10.00)";
+		// 	echo "</label>";
+		// 	echo "<br>";
+		// 	echo "<input style='border-radius: 20px; padding:10px 20px 10px 20px' type='submit' value='Update Delivery Type'>";
+		// 	echo "</form>";
+		// 	if (isset($_POST["deliverType"])) {
+		// 		$delivery = $_POST["deliverType"];  
+		// 		if ($delivery == "standard") {
+		// 			$deliveryTotal = $_SESSION["SubTotal"] + 5;
+		// 			echo "<p style='text-align:right; font-size:20px'>
+		// 					Subtotal = S$". number_format($deliveryTotal, 2);
+		// 			$_SESSION["SubTotal"] = $deliveryTotal;
 
-				}
-				else if ($delivery == "express"){
-					$deliveryTotal = $_SESSION["SubTotal"] + 10;
-					echo "<p style='text-align:right; font-size:20px'>
-							Subtotal = S$". number_format($deliveryTotal, 2);
-							$_SESSION["SubTotal"] = $deliveryTotal;
-				}
-			}
+		// 		}
+		// 		else if ($delivery == "express"){
+		// 			$deliveryTotal = $_SESSION["SubTotal"] + 10;
+		// 			echo "<p style='text-align:right; font-size:20px'>
+		// 					Subtotal = S$". number_format($deliveryTotal, 2);
+		// 					$_SESSION["SubTotal"] = $deliveryTotal;
+		// 		}
+		// 	}
 			// Basic Requirment
 			// Display the subtotal at the end of the shopping cart
-			else{
-				echo "<br>";
-				echo "<p style='text-align:right; font-size:20px'>
-			  	Subtotal = S$". number_format($_SESSION["SubTotal"], 2);
-			}	
-		}
+		// 	else{
+		// 		echo "<br>";
+		// 		echo "<p style='text-align:right; font-size:20px'>
+		// 	  	Subtotal = S$". number_format($_SESSION["SubTotal"], 2);
+		// 	}	
+		// }
 		echo "<br>";
 		echo "<br>";
 
