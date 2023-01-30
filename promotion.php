@@ -3,9 +3,10 @@
 include_once("mysql_conn.php");
 
 // Form SQL to retrieve list of products on offer
+$datestring = date("Y-m-d", time());
 $qry = "SELECT ProductID, ProductTitle, ProductDesc, ProductImage, Price, Quantity, OfferedPrice, OfferStartDate, OfferEndDate
 		FROM product
-		WHERE Offered = 1";
+		WHERE Offered = 1 AND OfferStartDate <= '$datestring' AND OfferEndDate >= '$datestring'";
 $stmt = $conn->prepare($qry);
 $stmt->execute();
 $result = $stmt->get_result();
