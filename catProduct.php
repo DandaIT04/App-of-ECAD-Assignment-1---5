@@ -19,7 +19,7 @@ include_once("mysql_conn.php");
 // To Do:  Starting ....
 $cid=$_GET["cid"]; //Read Category ID from query string
 // Form SQL to retrieve list of products associated to the Category ID
-$qry = "SELECT p.ProductID, p.ProductTitle, p.ProductImage, p.Price, p.Quantity, p.OfferedPrice, p.Offered
+$qry = "SELECT p.ProductID, p.ProductTitle, p.ProductImage, p.Price, p.Quantity, p.OfferedPrice, p.Offered, p.OfferStartDate, p.OfferEndDate
 		FROM CatProduct cp INNER JOIN product p ON cp.ProductID=p.ProductID
 		WHERE cp.CategoryID=?
 		ORDER BY ProductTitle";
@@ -40,19 +40,27 @@ while ($row = $result->fetch_array()){
 	echo "<div class='col-8'>"; //67% of row width
 	echo "<p class='h4 font-weight-bolder'><a href=$product>$row[ProductTitle]</a></p>";
 	if ($row["OfferedPrice"] != NULL){
-		$formattedPrice2 = number_format($row["OfferedPrice"],2);
-		echo "Price:<span style='font-weight: bold; color: red;'>
-		<s>S$ $formattedPrice</s></span>";
-		echo "<span style='font-weight: bold; color: red; font-size: 1.2vw'>
-        S$ $formattedPrice2</span>";
 		
+		if (date("y-m-d", strtotime($row["OfferEndDate"])) >= date("y-m-d", time()) && date("y-m-d", time()) >= date("y-m-d", strtotime($row["OfferStartDate"]))){
+			$formattedPrice2 = number_format($row["OfferedPrice"],2);
+			echo "Price:<span style='font-weight: bold; color: red;'>
+			<s>S$ $formattedPrice</s></span>";
+			echo "<span style='font-weight: bold; color: red; font-size: 1.2vw'>
+			S$ $formattedPrice2</span>";
+		}
+		else{
+			echo "Price:<span style='font-weight: bold; color: red;'>
+			S$ $formattedPrice</span>";
+		}
 	}
 	else{
 		echo "Price:<span style='font-weight: bold; color: red;'>
 		S$ $formattedPrice</span>";
 	}
 	if ($row["Offered"] == 1){
-		echo "<p class='h3 font-weight-bolder' style='color: red;'>&lt;On Offer&gt;</p>";
+		if (date("y-m-d", strtotime($row["OfferEndDate"])) >= date("y-m-d", time()) && date("y-m-d", time()) >= date("y-m-d", strtotime($row["OfferStartDate"]))){
+			echo "<p class='h3 font-weight-bolder' style='color: red;'>&lt;On Offer&gt;</p>";
+		}
 	}
 	echo "</div>";
 

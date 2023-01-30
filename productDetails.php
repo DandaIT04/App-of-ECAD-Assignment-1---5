@@ -25,7 +25,9 @@ while ($row = $result->fetch_array()){
     echo "<div class='col-sm-12' style='padding:5px'>";
     echo "<span class='page-title'>$row[ProductTitle]</span>";
     if ($row["Offered"] == 1){
-		echo "<span class='page-title font-weight-bolder px-4' style='color: red;'>&lt;On Offer&gt;</span>";
+        if (date("y-m-d", strtotime($row["OfferEndDate"])) >= date("y-m-d", time()) && date("y-m-d", time()) >= date("y-m-d", strtotime($row["OfferStartDate"]))){
+		    echo "<span class='page-title font-weight-bolder px-4' style='color: red;'>&lt;On Offer&gt;</span>";
+        }
 	}
     echo "</div>";
     echo "</div>";
@@ -62,11 +64,17 @@ while ($row = $result->fetch_array()){
     $formattedPrice = number_format($row["Price"], 2);
     
     if ($row["OfferedPrice"] != NULL){
-        echo "Price:<span style='font-weight:bold; color:red;'>
-        <s>S$ $formattedPrice</s></span>";
-        $formattedPrice2 = number_format($row["OfferedPrice"], 2);
-        echo "<span style='font-weight: bold; color: red; font-size: 1.2vw'>
-        S$ $formattedPrice2</span>";
+        if (date("y-m-d", strtotime($row["OfferEndDate"])) >= date("y-m-d", time()) && date("y-m-d", time()) >= date("y-m-d", strtotime($row["OfferStartDate"]))){
+            echo "Price:<span style='font-weight:bold; color:red;'>
+            <s>S$ $formattedPrice</s></span>";
+            $formattedPrice2 = number_format($row["OfferedPrice"], 2);
+            echo "<span style='font-weight: bold; color: red; font-size: 1.2vw'>
+            S$ $formattedPrice2</span>";
+        }
+        else{
+            echo "Price:<span style='font-weight:bold; color:red;'>
+            S$ $formattedPrice</span>";
+        }
     }
     else{
         echo "Price:<span style='font-weight:bold; color:red;'>

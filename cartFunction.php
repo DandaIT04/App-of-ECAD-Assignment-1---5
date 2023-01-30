@@ -72,14 +72,26 @@ function addItem() {
 		while ($row = $result->fetch_array()){
 
 			if ($row["OfferedPrice"] != NULL) {
-				$qry = "INSERT INTO ShopCartItem(ShopCartID, ProductID, Price, Name, Quantity)
-				SELECT ?, ?, OfferedPrice, ProductTitle, ? FROM Product WHERE ProductID=? AND Offered!= 0";
-				$stmt = $conn->prepare($qry);
-				// "iiii" - 4 integers
-				$stmt->bind_param("iiii", $_SESSION["Cart"], $pid, $quantity, $pid);
-				$stmt->execute();
-				$stmt->close();
-				$addNewItem = 1;
+				if (date("y-m-d", strtotime($row["OfferEndDate"])) >= date("y-m-d", time()) && date("y-m-d", time()) >= date("y-m-d", strtotime($row["OfferStartDate"]))){
+					$qry = "INSERT INTO ShopCartItem(ShopCartID, ProductID, Price, Name, Quantity)
+					SELECT ?, ?, OfferedPrice, ProductTitle, ? FROM Product WHERE ProductID=? AND Offered!= 0";
+					$stmt = $conn->prepare($qry);
+					// "iiii" - 4 integers
+					$stmt->bind_param("iiii", $_SESSION["Cart"], $pid, $quantity, $pid);
+					$stmt->execute();
+					$stmt->close();
+					$addNewItem = 1;
+				}
+				else{
+					$qry = "INSERT INTO ShopCartItem(ShopCartID, ProductID, Price, Name, Quantity)
+					SELECT ?, ?, Price, ProductTitle, ? FROM Product WHERE ProductID=?";
+					$stmt = $conn->prepare($qry);
+					// "iiii" - 4 integers
+					$stmt->bind_param("iiii", $_SESSION["Cart"], $pid, $quantity, $pid);
+					$stmt->execute();
+					$stmt->close();
+					$addNewItem = 1;
+				}
 			}
 			else{
 				$qry = "INSERT INTO ShopCartItem(ShopCartID, ProductID, Price, Name, Quantity)

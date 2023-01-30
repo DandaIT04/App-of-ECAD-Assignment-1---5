@@ -7,7 +7,7 @@ include("header.php"); // Include the Page Layout header
 <div style="width:80%; margin:auto;"> <!-- Container -->
 <form name="frmSearch" method="get" action="">
     <div class="form-group row"> <!-- 1st row -->
-        <div class="col-sm-9 offset-sm-1 text-center">
+        <div class="col-sm text-center">
             <span class="page-title">Product Search</span>
         </div>
     </div> <!-- End of 1st row -->
@@ -23,6 +23,32 @@ include("header.php"); // Include the Page Layout header
             <button type="submit">Search</button>
         </div>
     </div>  <!-- End of 2nd row -->
+    <div class="form-group row"> 
+        <div class="col-sm text-center">
+            Filters 
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="conditions" 
+               class="col-sm-2 col-form-label">Price Range:</label>
+        <div class="col-sm-2">
+            <input class="form-control" name="pricestart" id="pricestart" 
+                   type="search" />
+        </div>  
+        <div style="margin-top: 10px"> to </div>
+        <div class="col-sm-2">
+            <input class="form-control" name="priceend" id="priceend" 
+                   type="search" />
+        </div>  
+        <label for="promotions" 
+               class="col-form-label pl-5">On Offer: </label>
+        <div class="col-sm-1 mt-2">
+            <input type="checkbox" name="promotions" value="promotions">
+        </div>
+
+    </div>
+
 </form>
 
 <?php
@@ -31,15 +57,44 @@ if (isset($_GET["keywords"]) && trim($_GET['keywords']) != "") {
     // To Do (DIY): Retrieve list of product records with "ProductTitle" 
 	// contains the keyword entered by shopper, and display them in a table.
 	echo "<p /><table>";
-    echo "<tr><th> Search results for $_GET[keywords]:</th></tr>";
+    echo "<tr><th class='pt-4'> Search results for $_GET[keywords]:</th></tr>";
     $SearchText ="%".$_GET["keywords"]."%"; // % - wildcard in search string
     // Include the PHP file that establishes database connection handle: $conn
     include_once("mysql_conn.php");
     // Form SQL to select the product record with "Product Title" or 
     //- "Product Description" contains the search keyword
+    $conditions = array();
+    if (isset($_GET["pricestart"]) && trim($_GET['pricestart']) != ""){
+        if (is_numeric($_GET["pricestart"])){
+            $startprice = $_GET['pricestart'];
+            $conditions[] = "Price > $startprice";
+        }
+        else{
+            echo "Price range is not numeric.";
+        }
+    }
+    if (isset($_GET["priceend"]) && trim($_GET['priceend']) != ""){
+        if (is_numeric($_GET["priceend"])){
+            $endprice = $_GET['priceend'];
+            $conditions[] = "Price < $endprice";
+        }
+        else{
+            echo "Price range is not numeric.";
+        }
+    }
+    if (isset($_GET["promotions"])){
+        $conditions[] = "OfferedPrice IS NOT NULL";
+        $datestring = date("Y-m-d", time());
+        $conditions[] = "OfferEndDate >= '$datestring'";
+        $conditions[] = "OfferStartDate <= '$datestring'";          
+    }
     $qry = "SELECT ProductID, ProductTitle, ProductImage, Price, Quantity
-            FROM product WHERE ProductTitle LIKE ? OR ProductDesc LIKE ?
-            ORDER BY ProductTitle ASC";
+            FROM product WHERE ";
+    if (count($conditions) > 0) {
+        $qry .= implode(' AND ', $conditions);
+        $qry .= " AND ";
+    }
+    $qry .= " (ProductTitle LIKE ? OR ProductDesc LIKE ?) ORDER BY ProductTitle ASC";
     $stmt = $conn->prepare($qry);
     $stmt->bind_param("ss", $SearchText, $SearchText);
     $stmt->execute(); //Execute prepared SQL statement
@@ -122,21 +177,3 @@ include("footer.php"); // Include the Page Layout footer
 
 </style>
 
-<script>
-function myFunction() {
-    var input, filter, ul, li, a, i, txtValue;
-    input = document.getElementById("keywords");
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("myUL");
-    li = ul.getElementsByTagName("li");
-    for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByClassName("title")[0];
-        txtValue = a.textContent || a.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
-        } else {
-            li[i].style.display = "none";
-        }
-    }
-}
-</script>
