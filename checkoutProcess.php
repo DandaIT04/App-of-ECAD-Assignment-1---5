@@ -1,5 +1,9 @@
 <?php
+namespace Checkout;
+header('Cache-Control: no cache'); //no cache
+session_cache_limiter('private_no_expire'); // works
 session_start();
+
 include("header.php"); // Include the Page Layout header
 include_once("myPayPal.php"); // Include the file that contains PayPal settings
 include_once("mysql_conn.php"); 
@@ -8,14 +12,16 @@ if($_POST) //Post Data received from Shopping cart page.
 {
 	// Check to ensure each product item saved in the associative
 	// array is not out of stock
-	foreach ($_SESSION['Items'] as $key => $item) {
-		$qry = "SELECT Quantity FROM product WHERE ProductID=$item[productId]";
-		$result = $conn->query($qry);
+	// foreach ($_SESSION['Items'] as $key => $item) {
+	// 	$qry = "SELECT Quantity FROM product WHERE ProductID=$item[productId]";
+	// 	$result = $conn->query($qry);
 
-		if ($result->num_rows > 0) {
-            echo ($result);
-		}
-	}
+	// 	if ($result->num_rows > 0) {
+    //         $row2 = $result->fetch_array();
+    //         $tempQty = $row2["Quantity"];
+    //   		echo($tempQty);      
+    // }
+	// }
 	
 	$paypal_data = '';
 	// Get all items from the shopping cart, concatenate to the variable $paypal_data
@@ -30,8 +36,6 @@ if($_POST) //Post Data received from Shopping cart page.
 	// Compute GST amount 8% for Singapore, round the figure to 2 decimal places
     $_SESSION["Tax"] = round($_SESSION["SubTotal"]*0.08, 2);
 	
-	// Compute Shipping charge
-    $_SESSION["ShipCharge"] = 5.00;	
 	
 	//Data to be sent to PayPal
 	$padata = '&CURRENCYCODE='.urlencode($PayPalCurrencyCode).
@@ -40,11 +44,11 @@ if($_POST) //Post Data received from Shopping cart page.
 			  '&PAYMENTREQUEST_0_CURRENCYCODE='.urlencode($PayPalCurrencyCode).
 			  '&PAYMENTREQUEST_0_AMT='.urlencode($_SESSION["SubTotal"] +
 				                                 $_SESSION["Tax"] + 
-												 $_SESSION["ShipCharge"]).
+												 $_SESSION["Delivery"]).
 			  '&PAYMENTREQUEST_0_ITEMAMT='.urlencode($_SESSION["SubTotal"]). 
-			  '&PAYMENTREQUEST_0_SHIPPINGAMT='.urlencode($_SESSION["ShipCharge"]). 
-			  '&PAYMENTREQUEST_0_TAXAMT='.urlencode($_SESSION["Tax"]). 	
-			  '&BRANDNAME='.urlencode("Mamaya e-BookStore").
+			  '&PAYMENTREQUEST_0_SHIPPINGAMT='.urlencode($_SESSION["Delivery"]). 
+			  '&PAYMENTREQUEST_0_TAXAMT='.urlencode($_SESSION["Tax"]).
+			  '&BRANDNAME='.urlencode("Little Coco").
 			  $paypal_data.				
 			  '&RETURNURL='.urlencode($PayPalReturnURL ).
 			  '&CANCELURL='.urlencode($PayPalCancelURL);	
@@ -101,10 +105,10 @@ if(isset($_GET["token"]) && isset($_GET["PayerID"]))
 			  $paypal_data.	
 			  '&PAYMENTREQUEST_0_ITEMAMT='.urlencode($_SESSION["SubTotal"]).
               '&PAYMENTREQUEST_0_TAXAMT='.urlencode($_SESSION["Tax"]).
-              '&PAYMENTREQUEST_0_SHIPPINGAMT='.urlencode($_SESSION["ShipCharge"]).
+              '&PAYMENTREQUEST_0_SHIPPINGAMT='.urlencode($_SESSION["Delivery"]).
 			  '&PAYMENTREQUEST_0_AMT='.urlencode($_SESSION["SubTotal"] + 
 			                                     $_SESSION["Tax"] + 
-								                 $_SESSION["ShipCharge"]).
+												 $_SESSION["Delivery"]).
 			  '&PAYMENTREQUEST_0_CURRENCYCODE='.urlencode($PayPalCurrencyCode);
 	
 	//We need to execute the "DoExpressCheckoutPayment" at this point 
@@ -121,29 +125,27 @@ if(isset($_GET["token"]) && isset($_GET["PayerID"]))
 		// after successful checkout
 		$qry = "SELECT * from shopcartitem WHERE ShopCartID=$_SESSION[Cart]";
 		$result = $conn->query($qry);
-		if ($conn->num_rows($result) > 0) {
-			while ($row = $conn->fetch_array($result)) {
-				$qry = "UPDATE product SET Quantity = Quantity-$row[Quantity] WHERE ProductID=$row[ProductID]";
-				$conn->query($qry);
+		if ($result->num_rows > 0) {
+			while ($row = $result->fetch_array()) {
+			  $qry = "UPDATE product SET Quantity = Quantity-$row[Quantity] WHERE ProductID=$row[ProductID]";
+			  $conn->query($qry);
 			}
-		}
+		  }
 	
 		//Update shopcart table, close the shopping cart (OrderPlaced=1)
-        $total = $_SESSION["SubTotal"] + $_SESSION["Tax"] + $_SESSION["ShipCharge"];
+        $total = $_SESSION["SubTotal"] + $_SESSION["Tax"] + $_SESSION["Delivery"];
         $qry = "UPDATE shopcart SET OrderPlaced=1, Quantity=?,
                 SubTotal=?, ShipCharge=?, Tax=?, Total=?
                 WHERE ShopCartID=?";
         $stmt = $conn -> prepare($qry);
         $stmt -> bind_param("iddddi", $_SESSION["NumCartItem"],
-                            $_SESSION["SubTotal"], $_SESSION["ShipCharge"],
+                            $_SESSION["SubTotal"], $_SESSION["Delivery"],
                             $_SESSION["Tax"], $total,
                             $_SESSION["Cart"]);
 
         $stmt->execute();
         $stmt->close();
 
-		// End of To Do 2
-		
 		//We need to execute the "GetTransactionDetails" API Call at this point 
 		//to get customer details
 		$transactionID = urlencode(

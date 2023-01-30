@@ -99,9 +99,12 @@ if (isset($_SESSION["Cart"])) {
 		// Total Quantity in Cart
 		echo "<p style='text-align:right; font-size:15px'>
 			  Total Quantity is ". number_format($subTotalQuantity);
-		$_SESSION["SubTotalQ"] = round($subTotalQuantity);	
+		$_SESSION["SubTotalQ"] = round($subTotalQuantity);
 		echo "<br>";
 		echo "<br>";
+		echo "<p style='text-align:right; font-size:20px'>
+			  	Subtotal = S$ ". number_format($subTotal, 2);
+
 		// Additional Requirment
 		// Delivery Chargings
 		if ($_SESSION["SubTotal"] > 200) {
@@ -167,11 +170,7 @@ if (isset($_SESSION["Cart"])) {
 		// }
 		// echo "</p>";
 		
-		// Add PayPal Checkout button on the shopping cart page
-		// echo "<form method='post' action='checkoutProcess.php'>";
-		// echo "<input type='image' style='float:right;'
-		// 				src='https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif'>";
-		// echo "</form></p>";
+		
 
 		echo "<form method='post' action='checkoutConfirmation.php'>
 				<input style='float:right; border-radius: 20px; padding:10px 20px 10px 20px' type='submit' class='checkout'
