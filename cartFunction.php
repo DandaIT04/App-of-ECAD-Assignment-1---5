@@ -99,7 +99,7 @@ function addItem() {
 		$_SESSION["NumCartItem"] = 1;
 	}
 	else{
-		$_SESSION["NumCartItem"] = 1;
+		$_SESSION["NumCartItem"] = 0;
 	}
 	// Redirect shopper to shopping cart page
 	header("Location: shoppingCart.php");
