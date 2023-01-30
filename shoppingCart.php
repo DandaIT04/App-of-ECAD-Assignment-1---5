@@ -107,6 +107,9 @@ if (isset($_SESSION["Cart"])) {
 		if ($_SESSION["SubTotal"] > 200) {
 			echo "<br>";
 			echo "<p style='text-align:right; font-size:15px; color:red;' > Delivery Charges are waived for orders above $200";
+			echo "<br>";
+				echo "<p style='text-align:right; font-size:20px'>
+			  	Subtotal = S$". number_format($_SESSION["SubTotal"], 2);
 		}
 		else {
 			echo "<p style='text-align:right; font-size:15px'> Please Select Delivery Mode";
@@ -143,7 +146,7 @@ if (isset($_SESSION["Cart"])) {
 			else{
 				echo "<br>";
 				echo "<p style='text-align:right; font-size:20px'>
-			  	Subtotal = S$". number_format($subTotal, 2);
+			  	Subtotal = S$". number_format($_SESSION["SubTotal"], 2);
 			}	
 		}
 		echo "<br>";
